@@ -1,18 +1,11 @@
-import * as core from '@actions/core';
-import { wait } from './wait';
-async function run() {
-    try {
-        const ms = core.getInput('milliseconds');
-        core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-        core.debug(new Date().toTimeString());
-        await wait(parseInt(ms, 10));
-        core.debug(new Date().toTimeString());
-        core.setOutput('time', new Date().toTimeString());
-    }
-    catch (error) {
-        if (error instanceof Error)
-            core.setFailed(error.message);
-    }
+import { setFailed } from '@actions/core';
+import run from '@probot/adapter-github-actions';
+import app from './app';
+try {
+    await run.run(app);
 }
-run();
+catch (error) {
+    if (error instanceof Error)
+        setFailed(error.message);
+}
 //# sourceMappingURL=main.js.map
