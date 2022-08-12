@@ -1,15 +1,16 @@
+---
+
 name: Development Freezer
-description: 'Provide a description here'
+description: Notify contributors about ongoing development freeze.
 
 branding:
   icon: archive
   color: blue
 
 inputs:
-  milliseconds: # change this
+  token:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: GitHub token used to set issue labels
 
 runs:
   using: 'node16'
