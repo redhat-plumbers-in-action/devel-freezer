@@ -4,11 +4,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { error } from '@actions/core';
-import { IsString, MinLength, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, IsString, MinLength, validate, ValidateNested, } from 'class-validator';
+import { ValidationFeedback } from './validation-feedback';
 export class Config {
     constructor(config) {
-        this._policy = config.policy.map(item => new PolicyItem(item));
+        this._policy = Array.isArray(config === null || config === void 0 ? void 0 : config.policy)
+            ? config.policy.map(item => new PolicyItem(item))
+            : [];
     }
     get policy() {
         return this._policy;
@@ -16,7 +18,6 @@ export class Config {
     static async getConfig(context) {
         const retrievedConfig = await context.config('development-freeze.yml');
         if (Config.isConfigEmpty(retrievedConfig)) {
-            error(``);
             throw new Error();
         }
         const config = new this(retrievedConfig);
@@ -25,9 +26,21 @@ export class Config {
     static isConfigEmpty(config) {
         return config === null;
     }
+    static async validate(instance) {
+        const validationResult = await validate(instance, {
+            whitelist: true,
+            forbidNonWhitelisted: true,
+        });
+        const results = validationResult.map(error => {
+            return ValidationFeedback.composeFeedbackObject(error);
+        });
+        return results;
+    }
 }
 __decorate([
-    ValidateNested()
+    IsArray(),
+    ValidateNested({ each: true }),
+    ArrayMinSize(1)
 ], Config.prototype, "_policy", void 0);
 class PolicyItem {
     constructor(item) {
@@ -42,9 +55,8 @@ class PolicyItem {
     }
 }
 __decorate([
-    MinLength(1, {
-        each: true,
-    })
+    IsString({ each: true }),
+    MinLength(1, { each: true })
 ], PolicyItem.prototype, "_tags", void 0);
 __decorate([
     ValidateNested()
@@ -62,9 +74,11 @@ class Feedback {
     }
 }
 __decorate([
-    IsString()
+    IsString(),
+    MinLength(1)
 ], Feedback.prototype, "_freezedState", void 0);
 __decorate([
-    IsString()
+    IsString(),
+    MinLength(1)
 ], Feedback.prototype, "_unFreezedState", void 0);
 //# sourceMappingURL=config.js.map

@@ -9,6 +9,13 @@ export declare class Config {
         [K in keyof typeof events]: Context<typeof events[K][number]>;
     }[keyof typeof events]): Promise<Config>;
     static isConfigEmpty(config: TConfigObject | null | unknown): boolean;
+    static validate(instance: Config): Promise<{
+        property: string;
+        value: any;
+        notes: {
+            [type: string]: string;
+        } | undefined;
+    }[]>;
 }
 declare class PolicyItem {
     private _tags;

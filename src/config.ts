@@ -1,5 +1,3 @@
-import { Context } from 'probot';
-
 import {
   ArrayMinSize,
   IsArray,
@@ -8,9 +6,11 @@ import {
   validate,
   ValidateNested,
 } from 'class-validator';
+import { Context } from 'probot';
 
 import { events } from './events';
 import { ValidationFeedback } from './validation-feedback';
+
 import { TConfigObject, TFeedback, TPolicyItem } from './types.d';
 
 export class Config {

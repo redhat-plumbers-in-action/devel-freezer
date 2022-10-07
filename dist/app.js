@@ -1,35 +1,42 @@
 import { debug, error, warning } from '@actions/core';
 import { validateOrReject } from 'class-validator';
-import { events } from './events';
-import { freezePullRequest } from './freezer';
-import { getLatestTag, isTagFreezed } from './release';
 import { Config } from './config';
+import { events } from './events';
+import { PullRequest } from './pull-request';
+import { Tag } from './tag';
 const app = (probot) => {
     probot.on(events.pull_request, async (context) => {
         const config = await Config.getConfig(context);
+        // TODO: Proper error handling
         await validateOrReject(config);
         if (!config) {
             error(`Missing configuration. Please setup 'devel-freezer' action using 'development-freeze.yml' file.`);
             return;
         }
-        const latestTag = await getLatestTag(context);
-        if (!latestTag) {
+        const tag = new Tag(await Tag.getLatestTag(context));
+        if (!tag.latest) {
             warning(`Repository doesn't have any tags or releases published.`);
             return;
         }
-        debug(`Latest tag is: '${latestTag}'`);
-        for (const item of config.policy) {
-            if (!isTagFreezed(latestTag, item.tags)) {
+        debug(`Latest tag is: '${tag.latest}'`);
+        const pullRequest = await PullRequest.getPullRequest(context);
+        for (const policyItem of config.policy) {
+            if (!tag.isFreezed(policyItem.tags)) {
                 continue;
             }
-            await freezePullRequest(item.feedback.freezedState, latestTag, context);
+            await pullRequest.freeze(policyItem.feedback.freezedState, tag.latest, context);
             return;
         }
-        // TODO: If PR is changed and contains metadata from devel-freezer, update comment
-        // ? It requires knowledge about old freezing tag ...
-        // get metadata if any
-        // if metadata check tag and get unfreezing comment (for loop policy)
-        // update metadata and comment
+        if (!pullRequest.isFreezed()) {
+            return;
+        }
+        for (const policyItem of config.policy) {
+            if (!pullRequest.isTagPolicyComplient(policyItem.tags)) {
+                continue;
+            }
+            await pullRequest.unfreeze(policyItem.feedback.unFreezedState, context);
+            return;
+        }
         debug(`The latest tag doesn't match the requirements for a development freeze.`);
     });
 };

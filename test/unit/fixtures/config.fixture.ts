@@ -1,4 +1,4 @@
-import { Config } from "../../../src/config";
+import { Config } from '../../../src/config';
 
 export interface IConfigTestContext {
   configs: Config[];
@@ -10,10 +10,10 @@ export const configContextFixture: IConfigTestContext = {
     new Config({
       policy: [
         {
-          tags: ["alpha", "beta"],
+          tags: ['alpha', 'beta'],
           feedback: {
-            "freezed-state": "This is No-No",
-            "un-freezed-state": "This is Yes-Yes",
+            'freezed-state': 'This is No-No',
+            'un-freezed-state': 'This is Yes-Yes',
           },
         },
       ],
