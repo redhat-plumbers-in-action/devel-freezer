@@ -1,0 +1,65 @@
+// Vitest Snapshot v1
+
+exports[`Config Object > get policy() 1`] = `
+[
+  PolicyItem {
+    "_feedback": Feedback {
+      "_freezedState": "This is No-No",
+      "_unFreezedState": "This is Yes-Yes",
+    },
+    "_tags": [
+      "alpha",
+      "beta",
+    ],
+  },
+]
+`;
+
+exports[`Config Object > is invalid 1`] = `
+[
+  {
+    "notes": {
+      "arrayMinSize": "_policy must contain at least 1 elements",
+    },
+    "property": "_policy",
+    "value": [],
+  },
+]
+`;
+
+exports[`Config Object > is invalid 2`] = `
+[
+  {
+    "notes": {
+      "arrayMinSize": "_policy must contain at least 1 elements",
+    },
+    "property": "_policy",
+    "value": [],
+  },
+]
+`;
+
+exports[`Config Object > is invalid 3`] = `
+[
+  {
+    "notes": {
+      "arrayMinSize": "_policy must contain at least 1 elements",
+    },
+    "property": "_policy",
+    "value": [],
+  },
+]
+`;
+
+exports[`Config Object > is invalid 4`] = `
+[
+  {
+    "notes": {
+      "isString": "_freezedState must be a string",
+      "minLength": "_freezedState must be longer than or equal to 1 characters",
+    },
+    "property": "_policy.0._feedback._freezedState,_unFreezedState",
+    "value": undefined,
+  },
+]
+`;
