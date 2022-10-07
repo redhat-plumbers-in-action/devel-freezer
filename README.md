@@ -1,6 +1,6 @@
 # Devel Freezer
 
-[![GitHub Marketplace][market-status]][market] [![Unit Tests][test-status]][test] [![Linter][linter-status]][linter] [![CodeQL](codeql-status)](codeql) [![Check dist/](checkdist-status)](checkdist) [![codecov](codecov-status)](codecov) [![Mergify Status][mergify-status]][mergify]
+[![GitHub Marketplace][market-status]][market] [![Unit Tests][test-status]][test] [![Linter][linter-status]][linter] [![CodeQL][codeql-status]][codeql] [![Check dist/][check-dist-status]][check-dist] [![codecov][codecov-status]][codecov] [![Mergify Status][mergify-status]][mergify]
 
 <!-- Status links -->
 
@@ -16,8 +16,8 @@
 [codeql]: https://github.com/redhat-plumbers-in-action/devel-freezer/actions/workflows/codeql-analysis.yml
 [codeql-status]: https://github.com/redhat-plumbers-in-action/devel-freezer/actions/workflows/codeql-analysis.yml/badge.svg
 
-[checkdist]: https://github.com/redhat-plumbers-in-action/devel-freezer/actions/workflows/check-dist.yml
-[checkdist-status]: https://github.com/redhat-plumbers-in-action/devel-freezer/actions/workflows/check-dist.yml/badge.svg
+[check-dist]: https://github.com/redhat-plumbers-in-action/devel-freezer/actions/workflows/check-dist.yml
+[check-dist-status]: https://github.com/redhat-plumbers-in-action/devel-freezer/actions/workflows/check-dist.yml/badge.svg
 
 [codecov]: https://codecov.io/gh/redhat-plumbers-in-action/devel-freezer
 [codecov-status]: https://codecov.io/gh/redhat-plumbers-in-action/devel-freezer/branch/main/graph/badge.svg
