@@ -1,16 +1,28 @@
-import { error } from '@actions/core';
 import { Context } from 'probot';
-import { IsString, MinLength, ValidateNested } from 'class-validator';
+
+import {
+  ArrayMinSize,
+  IsArray,
+  IsString,
+  MinLength,
+  validate,
+  ValidateNested,
+} from 'class-validator';
 
 import { events } from './events';
+import { ValidationFeedback } from './validation-feedback';
 import { TConfigObject, TFeedback, TPolicyItem } from './types.d';
 
 export class Config {
-  @ValidateNested()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
   private _policy: PolicyItem[];
 
   constructor(config: TConfigObject) {
-    this._policy = config.policy.map(item => new PolicyItem(item));
+    this._policy = Array.isArray(config?.policy)
+      ? config.policy.map(item => new PolicyItem(item))
+      : [];
   }
 
   get policy() {
@@ -27,7 +39,6 @@ export class Config {
     );
 
     if (Config.isConfigEmpty(retrievedConfig)) {
-      error(``);
       throw new Error();
     }
 
@@ -39,12 +50,24 @@ export class Config {
   static isConfigEmpty(config: TConfigObject | null | unknown) {
     return config === null;
   }
+
+  static async validate(instance: Config) {
+    const validationResult = await validate(instance, {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    });
+
+    const results = validationResult.map(error => {
+      return ValidationFeedback.composeFeedbackObject(error);
+    });
+
+    return results;
+  }
 }
 
 class PolicyItem {
-  @MinLength(1, {
-    each: true,
-  })
+  @IsString({ each: true })
+  @MinLength(1, { each: true })
   private _tags: string[];
 
   @ValidateNested()
@@ -66,8 +89,11 @@ class PolicyItem {
 
 class Feedback {
   @IsString()
+  @MinLength(1)
   private _freezedState: string;
+
   @IsString()
+  @MinLength(1)
   private _unFreezedState: string;
 
   constructor(feedback: TFeedback) {
