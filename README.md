@@ -1,4 +1,9 @@
-# Devel Freezer
+<!-- markdownlint-disable MD033 MD041 -->
+<p align="center">
+  <!-- TODO: Use new color of plumber
+  <img src="https://github.com/redhat-plumbers-in-action/team/blob/70f67465cc46e02febb16aaa1cace2ceb82e6e5c/members/pink-plumber.png" width="100" /> -->
+  <h1 align="center">Devel Freezer</h1>
+</p>
 
 [![GitHub Marketplace][market-status]][market] [![Unit Tests][test-status]][test] [![Linter][linter-status]][linter] [![CodeQL][codeql-status]][codeql] [![Check dist/][check-dist-status]][check-dist] [![codecov][codecov-status]][codecov] [![Mergify Status][mergify-status]][mergify]
 
@@ -27,33 +32,47 @@
 
 <!-- -->
 
+Devel Freezer is a GitHub Action that can automatically notify contributors of your opensource project about state of development. When project is in development freeze or when development freeze has ended.
+
 ## How does it work
 
-... TBD ...
+TBA ...
 
 ## Features
 
-* TBA ...
+* Ability to comment on Pull Requests predefined messages based on latest tags
+* Ability to find and update comments from Devel Freezer GitHub Action
+* [Policy based](#policy) configuration using YAML syntax
+* Support for regular expressions for freezing tags definitions
+* And more ...
 
 ## Usage
 
-TBA
-
-## Configuration options
-
-Action currently accept following options:
-
 ```yml
-# ...
+name: Development Freezer
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  freezer:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Development Freezer
+        uses: redhat-plumbers-in-action/devel-freezer@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
-
-### token
-
-TBA
-
-## Policy
-
-It's possible to define labeling policy to further customize the labeling process. Policy can be defined using `.github/devel-freezer.yml` configuration file. Structure needs to be as follows:
 
 ```yml
 policy:
@@ -64,15 +83,83 @@ policy:
         Please ...
       un-freezed-state: |
         We are no longer in ...
+
+  # Suport for regular expressions
   - tags: ['^\S*-rc\d$']
     feedback:
       freezed-state: |
         We are currently in development freeze.
         Please ...
       unfreezed-state: |
-        We had succesfully released ${tag}.
+        We had succesfully released new major release.
         We are no longer in development freeze.
   # ...
 ```
 
-## Limitations
+### Real-life examples
+
+Feel free to try `devel-freezer` using template repository - [`@redhat-plumbers-in-action/development-freeze-automation`](https://github.com/redhat-plumbers-in-action/development-freeze-automation)
+
+## Configuration options
+
+Action currently accepts the following options:
+
+```yml
+# ...
+
+- uses: redhat-plumbers-in-action/devel-freezer@latest
+  with:
+    token: <GitHub token>
+
+# ...
+```
+
+### token
+
+Token used to create comments. Minimal required permissions are `contents: read` and `pull-requests: write`
+
+* default value: `undefined`
+* requirements: `required`
+* recomended value: `secrets.GITHUB_TOKEN`
+
+## Policy
+
+It's required to define freezing policy for Action for behave correctly. Policy can be defined using `.github/development-freeze.yml` configuration file. Structure needs to be as follows:
+
+```yml
+policy:
+  - tags: ['alpha', 'beta']
+    feedback:
+      freezed-state: |
+        🥶 We are currently in ...
+        🙏 Please ...
+      un-freezed-state: |
+        😎 We are no longer in ...
+  - tags: ['^\S*-rc\d$']
+    feedback:
+      freezed-state: |
+        We are currently in development freeze.
+        Please ...
+      unfreezed-state: |
+        We had succesfully released new major version.
+        We are no longer in development freeze.
+  # tags: ...
+```
+
+### `tags` keyword
+
+Array of tag names and/or regular expressions describing freezing tag scheme (e.g. `^\S*-rc\d$` for tags like `v251-rc1`, `v252-rc2`, etc.). Multiple freezing schemes are supported.
+
+* requirements: `required`
+
+### `feedback.freezed-state` keyword
+
+Message that is going to be displayed in form of comment when development freeze conditions are met. Support for multi-line string using `|` YAML syntax.
+
+* requirements: `required`
+
+### `feedback.un-freezed-state` keyword
+
+Message that is going to replace development freeze mesage when development freeze conditions are no longer met. Support for multi-line string using `|` YAML syntax.
+
+* requirements: `required`
