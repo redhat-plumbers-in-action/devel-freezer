@@ -8,6 +8,6 @@ export type TPolicyItem = {
 };
 
 export type TFeedback = {
-  'freezed-state': string;
-  'un-freezed-state': string;
+  'frozen-state': string;
+  'unfreeze-state': string;
 };

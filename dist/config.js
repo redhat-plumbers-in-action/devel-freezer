@@ -63,22 +63,22 @@ __decorate([
 ], PolicyItem.prototype, "_feedback", void 0);
 class Feedback {
     constructor(feedback) {
-        this._freezedState = feedback['freezed-state'];
-        this._unFreezedState = feedback['un-freezed-state'];
+        this._frozenState = feedback['frozen-state'];
+        this._unFreezeState = feedback['unfreeze-state'];
     }
     get freezedState() {
-        return this._freezedState;
+        return this._frozenState;
     }
     get unFreezedState() {
-        return this._unFreezedState;
+        return this._unFreezeState;
     }
 }
 __decorate([
     IsString(),
     MinLength(1)
-], Feedback.prototype, "_freezedState", void 0);
+], Feedback.prototype, "_frozenState", void 0);
 __decorate([
     IsString(),
     MinLength(1)
-], Feedback.prototype, "_unFreezedState", void 0);
+], Feedback.prototype, "_unFreezeState", void 0);
 //# sourceMappingURL=config.js.map

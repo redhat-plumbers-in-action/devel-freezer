@@ -25,8 +25,8 @@ declare class PolicyItem {
     get feedback(): Feedback;
 }
 declare class Feedback {
-    private _freezedState;
-    private _unFreezedState;
+    private _frozenState;
+    private _unFreezeState;
     constructor(feedback: TFeedback);
     get freezedState(): string;
     get unFreezedState(): string;

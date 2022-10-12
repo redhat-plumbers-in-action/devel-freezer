@@ -4,8 +4,8 @@ exports[`Config Object > get policy() 1`] = `
 [
   PolicyItem {
     "_feedback": Feedback {
-      "_freezedState": "This is No-No",
-      "_unFreezedState": "This is Yes-Yes",
+      "_frozenState": "This is No-No",
+      "_unFreezeState": "This is Yes-Yes",
     },
     "_tags": [
       "alpha",
@@ -55,10 +55,10 @@ exports[`Config Object > is invalid 4`] = `
 [
   {
     "notes": {
-      "isString": "_freezedState must be a string",
-      "minLength": "_freezedState must be longer than or equal to 1 characters",
+      "isString": "_frozenState must be a string",
+      "minLength": "_frozenState must be longer than or equal to 1 characters",
     },
-    "property": "_policy.0._feedback._freezedState,_unFreezedState",
+    "property": "_policy.0._feedback._frozenState,_unFreezeState",
     "value": undefined,
   },
 ]

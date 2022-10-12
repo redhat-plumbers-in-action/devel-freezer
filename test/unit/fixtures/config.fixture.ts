@@ -12,8 +12,8 @@ export const configContextFixture: IConfigTestContext = {
         {
           tags: ['alpha', 'beta'],
           feedback: {
-            'freezed-state': 'This is No-No',
-            'un-freezed-state': 'This is Yes-Yes',
+            'frozen-state': 'This is No-No',
+            'unfreeze-state': 'This is Yes-Yes',
           },
         },
       ],
