@@ -32,7 +32,7 @@
 
 <!-- -->
 
-Devel Freezer is a GitHub Action that can automatically notify contributors of your opensource project about state of development. When project is in development freeze or when development freeze has ended.
+Devel Freezer is a GitHub Action that can automatically notify contributors of your open-source project about the state of development. When the project is in development freeze or when the development freeze has ended.
 
 ## How does it work
 
@@ -40,7 +40,7 @@ TBA ...
 
 ## Features
 
-* Ability to comment on Pull Requests predefined messages based on latest tags
+* Ability to comment on Pull Requests predefined messages based on the latest tags
 * Ability to find and update comments from Devel Freezer GitHub Action
 * [Policy based](#policy) configuration using YAML syntax
 * Support for regular expressions for freezing tags definitions
@@ -78,22 +78,21 @@ jobs:
 policy:
   - tags: ['alpha', 'beta']
     feedback:
-      freezed-state: |
-        We are currently in ...
-        Please ...
-      un-freezed-state: |
-        We are no longer in ...
+      frozen-state: |
+        🥶 We are currently in ...
+        🙏 Please ...
+      unfreeze-state: |
+        😎 We are no longer in ...
 
   # Suport for regular expressions
   - tags: ['^\S*-rc\d$']
     feedback:
-      freezed-state: |
-        We are currently in development freeze.
+      frozen-state: |
+        We are currently in a development freeze phase.
         Please ...
-      unfreezed-state: |
-        We had succesfully released new major release.
-        We are no longer in development freeze.
-  # ...
+      unfreeze-state: |
+        We had successfully released a new major release.
+        We are no longer in a development freeze phase.
 ```
 
 ### Real-life examples
@@ -124,25 +123,27 @@ Token used to create comments. Minimal required permissions are `contents: read`
 
 ## Policy
 
-It's required to define freezing policy for Action for behave correctly. Policy can be defined using `.github/development-freeze.yml` configuration file. Structure needs to be as follows:
+It's required to define a freezing policy for Action to behave correctly. The policy can be defined using `.github/development-freeze.yml` configuration file. The structure needs to be as follows:
 
 ```yml
 policy:
   - tags: ['alpha', 'beta']
     feedback:
-      freezed-state: |
+      frozen-state: |
         🥶 We are currently in ...
         🙏 Please ...
-      un-freezed-state: |
+      unfreeze-state: |
         😎 We are no longer in ...
+
+  # Suport for regular expressions
   - tags: ['^\S*-rc\d$']
     feedback:
-      freezed-state: |
-        We are currently in development freeze.
+      frozen-state: |
+        We are currently in a development freeze phase.
         Please ...
-      unfreezed-state: |
-        We had succesfully released new major version.
-        We are no longer in development freeze.
+      unfreeze-state: |
+        We had successfully released a new major release.
+        We are no longer in a development freeze phase.
   # tags: ...
 ```
 
@@ -152,14 +153,14 @@ Array of tag names and/or regular expressions describing freezing tag scheme (e.
 
 * requirements: `required`
 
-### `feedback.freezed-state` keyword
+### `feedback.frozen-state` keyword
 
-Message that is going to be displayed in form of comment when development freeze conditions are met. Support for multi-line string using `|` YAML syntax.
+The message that is going to be displayed in form of a comment when development freeze conditions are met. Support for a multi-line string using `|` YAML syntax.
 
 * requirements: `required`
 
-### `feedback.un-freezed-state` keyword
+### `feedback.unfreeze-state` keyword
 
-Message that is going to replace development freeze mesage when development freeze conditions are no longer met. Support for multi-line string using `|` YAML syntax.
+The message that is going to replace the development freeze message when development freeze conditions are no longer met. Support for a multi-line string using `|` YAML syntax.
 
 * requirements: `required`

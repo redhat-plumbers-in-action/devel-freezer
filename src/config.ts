@@ -90,22 +90,22 @@ class PolicyItem {
 class Feedback {
   @IsString()
   @MinLength(1)
-  private _freezedState: string;
+  private _frozenState: string;
 
   @IsString()
   @MinLength(1)
-  private _unFreezedState: string;
+  private _unFreezeState: string;
 
   constructor(feedback: TFeedback) {
-    this._freezedState = feedback['freezed-state'];
-    this._unFreezedState = feedback['un-freezed-state'];
+    this._frozenState = feedback['frozen-state'];
+    this._unFreezeState = feedback['unfreeze-state'];
   }
 
   get freezedState() {
-    return this._freezedState;
+    return this._frozenState;
   }
 
   get unFreezedState() {
-    return this._unFreezedState;
+    return this._unFreezeState;
   }
 }
