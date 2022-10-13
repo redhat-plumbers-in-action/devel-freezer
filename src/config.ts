@@ -39,7 +39,9 @@ export class Config {
     );
 
     if (Config.isConfigEmpty(retrievedConfig)) {
-      throw new Error();
+      throw new Error(
+        `Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`
+      );
     }
 
     const config = new this(retrievedConfig as TConfigObject);
