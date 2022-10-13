@@ -18,7 +18,7 @@ const app = (probot: Probot) => {
 
       if (!config) {
         error(
-          `Missing configuration. Please setup 'devel-freezer' action using 'development-freeze.yml' file.`
+          `Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`
         );
         return;
       }

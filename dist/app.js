@@ -10,7 +10,7 @@ const app = (probot) => {
         // TODO: Proper error handling
         await validateOrReject(config);
         if (!config) {
-            error(`Missing configuration. Please setup 'devel-freezer' action using 'development-freeze.yml' file.`);
+            error(`Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`);
             return;
         }
         const tag = new Tag(await Tag.getLatestTag(context));

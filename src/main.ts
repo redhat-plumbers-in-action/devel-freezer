@@ -7,4 +7,5 @@ try {
   await run.run(app);
 } catch (error) {
   if (error instanceof Error) setFailed(error.message);
+  if (typeof error === 'string') setFailed(error);
 }
