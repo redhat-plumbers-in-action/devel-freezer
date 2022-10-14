@@ -39,7 +39,7 @@ Metadata.metadataCommentID = 'comment-id';
  * Based on probot-metadata - https://github.com/probot/metadata
  */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class MetadataController {
+export class MetadataController {
     static async getMetadata(key, context) {
         const body = (await context.octokit.issues.get(context.issue())).data.body || '';
         const match = body.match(MetadataController.regex);

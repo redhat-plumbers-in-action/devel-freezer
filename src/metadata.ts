@@ -80,7 +80,7 @@ export class Metadata {
  * Based on probot-metadata - https://github.com/probot/metadata
  */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class MetadataController {
+export class MetadataController {
   static readonly regex = /\n\n<!-- devel-freezer = (.*) -->/;
 
   static async getMetadata(key: string, context: Context) {
