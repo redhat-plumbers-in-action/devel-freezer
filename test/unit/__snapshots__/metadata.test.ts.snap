@@ -1,0 +1,17 @@
+// Vitest Snapshot v1
+
+exports[`Metadata Object > get commentID() 1`] = `undefined`;
+
+exports[`Metadata Object > get commentID() 2`] = `undefined`;
+
+exports[`Metadata Object > get commentID() 3`] = `"123456789"`;
+
+exports[`Metadata Object > get commentID() 4`] = `"123456789"`;
+
+exports[`Metadata Object > get tag() 1`] = `undefined`;
+
+exports[`Metadata Object > get tag() 2`] = `"v1"`;
+
+exports[`Metadata Object > get tag() 3`] = `undefined`;
+
+exports[`Metadata Object > get tag() 4`] = `"v1"`;
