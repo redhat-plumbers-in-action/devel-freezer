@@ -40,7 +40,7 @@ const app = (probot: Probot) => {
         }
 
         await pullRequest.freeze(
-          policyItem.feedback.freezedState,
+          policyItem.feedback.frozenState,
           tag.latest,
           context
         );
@@ -56,7 +56,7 @@ const app = (probot: Probot) => {
           continue;
         }
 
-        await pullRequest.unfreeze(policyItem.feedback.unFreezedState, context);
+        await pullRequest.unfreeze(policyItem.feedback.unFreezeState, context);
         return;
       }
 

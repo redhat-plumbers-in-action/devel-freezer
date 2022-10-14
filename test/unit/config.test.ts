@@ -18,7 +18,16 @@ describe('Config Object', () => {
   });
 
   test<IConfigTestContext>('get policy()', context => {
-    context.configs.map(item => expect(item.policy).toMatchSnapshot());
+    context.configs.map(configItem => {
+      expect(configItem.policy).toMatchSnapshot();
+
+      configItem.policy.map(policyItem => {
+        expect(policyItem.tags).toMatchSnapshot();
+        expect(policyItem.feedback).toMatchSnapshot();
+        expect(policyItem.feedback.frozenState).toMatchSnapshot();
+        expect(policyItem.feedback.unFreezeState).toMatchSnapshot();
+      });
+    });
   });
 
   it<IConfigTestContext>('is valid', async context => {
@@ -45,6 +54,3 @@ describe('Config Object', () => {
     expect(Config.isConfigEmpty(null)).toEqual(true);
   });
 });
-
-describe.todo('PolicyItem Object');
-describe.todo('Feedback Object');

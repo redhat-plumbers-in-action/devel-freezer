@@ -24,7 +24,7 @@ const app = (probot) => {
             if (!tag.isFreezed(policyItem.tags)) {
                 continue;
             }
-            await pullRequest.freeze(policyItem.feedback.freezedState, tag.latest, context);
+            await pullRequest.freeze(policyItem.feedback.frozenState, tag.latest, context);
             return;
         }
         if (!pullRequest.isFreezed()) {
@@ -34,7 +34,7 @@ const app = (probot) => {
             if (!pullRequest.isTagPolicyComplient(policyItem.tags)) {
                 continue;
             }
-            await pullRequest.unfreeze(policyItem.feedback.unFreezedState, context);
+            await pullRequest.unfreeze(policyItem.feedback.unFreezeState, context);
             return;
         }
         debug(`The latest tag doesn't match the requirements for a development freeze.`);
