@@ -66,10 +66,10 @@ class Feedback {
         this._frozenState = feedback['frozen-state'];
         this._unFreezeState = feedback['unfreeze-state'];
     }
-    get freezedState() {
+    get frozenState() {
         return this._frozenState;
     }
-    get unFreezedState() {
+    get unFreezeState() {
         return this._unFreezeState;
     }
 }

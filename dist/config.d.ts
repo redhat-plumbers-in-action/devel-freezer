@@ -28,7 +28,7 @@ declare class Feedback {
     private _frozenState;
     private _unFreezeState;
     constructor(feedback: TFeedback);
-    get freezedState(): string;
-    get unFreezedState(): string;
+    get frozenState(): string;
+    get unFreezeState(): string;
 }
 export {};
