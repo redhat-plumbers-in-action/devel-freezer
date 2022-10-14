@@ -2,6 +2,7 @@ import { Tag } from '../../../src/tag';
 
 export interface ITagTestContext {
   tags: Tag[];
+  tagPolicy: string[][];
   invalid: Tag[];
 }
 
@@ -12,7 +13,12 @@ export const tagContextFixture: ITagTestContext = {
     new Tag('latest'),
     new Tag('v1-rc1'),
     new Tag('v1-beta'),
+    new Tag('alpha'),
+    new Tag('beta'),
+    new Tag('rc1'),
   ],
+
+  tagPolicy: [['^S*-rcd$'], ['alpha', 'beta'], ['latest']],
 
   invalid: [
     // @ts-expect-error: Let's ignore a type error, it's required for testing

@@ -1,0 +1,65 @@
+// Vitest Snapshot v1
+
+exports[`Tag Object > get latest() 1`] = `"v0.0.1"`;
+
+exports[`Tag Object > get latest() 2`] = `"v1"`;
+
+exports[`Tag Object > get latest() 3`] = `"latest"`;
+
+exports[`Tag Object > get latest() 4`] = `"v1-rc1"`;
+
+exports[`Tag Object > get latest() 5`] = `"v1-beta"`;
+
+exports[`Tag Object > get latest() 6`] = `"alpha"`;
+
+exports[`Tag Object > get latest() 7`] = `"beta"`;
+
+exports[`Tag Object > get latest() 8`] = `"rc1"`;
+
+exports[`Tag Object > isFreezed() 1`] = `false`;
+
+exports[`Tag Object > isFreezed() 2`] = `false`;
+
+exports[`Tag Object > isFreezed() 3`] = `false`;
+
+exports[`Tag Object > isFreezed() 4`] = `false`;
+
+exports[`Tag Object > isFreezed() 5`] = `false`;
+
+exports[`Tag Object > isFreezed() 6`] = `false`;
+
+exports[`Tag Object > isFreezed() 7`] = `false`;
+
+exports[`Tag Object > isFreezed() 8`] = `false`;
+
+exports[`Tag Object > isFreezed() 9`] = `true`;
+
+exports[`Tag Object > isFreezed() 10`] = `false`;
+
+exports[`Tag Object > isFreezed() 11`] = `false`;
+
+exports[`Tag Object > isFreezed() 12`] = `false`;
+
+exports[`Tag Object > isFreezed() 13`] = `false`;
+
+exports[`Tag Object > isFreezed() 14`] = `true`;
+
+exports[`Tag Object > isFreezed() 15`] = `false`;
+
+exports[`Tag Object > isFreezed() 16`] = `false`;
+
+exports[`Tag Object > isFreezed() 17`] = `true`;
+
+exports[`Tag Object > isFreezed() 18`] = `false`;
+
+exports[`Tag Object > isFreezed() 19`] = `false`;
+
+exports[`Tag Object > isFreezed() 20`] = `true`;
+
+exports[`Tag Object > isFreezed() 21`] = `false`;
+
+exports[`Tag Object > isFreezed() 22`] = `false`;
+
+exports[`Tag Object > isFreezed() 23`] = `false`;
+
+exports[`Tag Object > isFreezed() 24`] = `false`;
