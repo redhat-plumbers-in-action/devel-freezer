@@ -498,12 +498,12 @@
   resolved "https://registry.yarnpkg.com/@octokit/webhooks-types/-/webhooks-types-5.8.0.tgz#b76d1a3e3ad82cec5680d3c6c3443a620047a6ef"
   integrity sha512-8adktjIb76A7viIdayQSFuBEwOzwhDC+9yxZpKNHjfzrlostHCw0/N7JWpWMObfElwvJMk2fY2l1noENCk9wmw==
 
-"@octokit/webhooks-types@6.5.0", "@octokit/webhooks-types@^6.5.0":
+"@octokit/webhooks-types@6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@octokit/webhooks-types/-/webhooks-types-6.5.0.tgz#536a22edc816d307de0d2fc1e6303022453a50eb"
   integrity sha512-SNx1YKBvi9IQvXo/SQ0p+9OKO2HMdzpCWcKsYxpGW1tlkE9TojYiGnFfxcXddyrsK4mC1UiyXY8+NYjWjtkVmA==
 
-"@octokit/webhooks@^10.3.0":
+"@octokit/webhooks@10.3.0":
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/@octokit/webhooks/-/webhooks-10.3.0.tgz#adb12f571f361388e9ad8abbb9df6f89cef52eb7"
   integrity sha512-6k4dNsTjNhoJNJ56RKkWCMXEj32Cgvy4hIsV3fhK60hKbEfI1/rkx7tF87Gqtf1Xg5UVQfFmYygaBPGQCr0TmQ==
@@ -3117,7 +3117,7 @@ neo-async@^2.6.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nock@^13.2.9:
+nock@13.2.9:
   version "13.2.9"
   resolved "https://registry.yarnpkg.com/nock/-/nock-13.2.9.tgz#4faf6c28175d36044da4cfa68e33e5a15086ad4c"
   integrity sha512-1+XfJNYF1cjGB+TKMWi29eZ0b82QOvQs2YoLNzbpWGqFMtRQHTa57osqdGj4FrFPgkO4D4AZinzUJR9VvW3QUA==
