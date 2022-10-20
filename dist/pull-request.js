@@ -10,7 +10,7 @@ export class PullRequest {
     isFreezed() {
         return !!this.metadata.commentID && !!this.metadata.tag;
     }
-    isTagPolicyComplient(tagPolicy, tag) {
+    isTagPolicyCompliant(tagPolicy, tag) {
         const freezingTag = tag !== null && tag !== void 0 ? tag : this.metadata.tag;
         if (freezingTag === undefined)
             false;

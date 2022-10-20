@@ -6,7 +6,7 @@ export declare class PullRequest {
     constructor(metadata: Metadata);
     get metadata(): Metadata;
     isFreezed(): boolean;
-    isTagPolicyComplient(tagPolicy: string[], tag?: string): boolean;
+    isTagPolicyCompliant(tagPolicy: string[], tag?: string): boolean;
     freeze(content: string, freezingTag: string, context: {
         [K in keyof typeof events]: Context<typeof events[K][number]>;
     }[keyof typeof events]): Promise<void>;

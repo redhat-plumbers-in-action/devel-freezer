@@ -52,7 +52,7 @@ const app = (probot: Probot) => {
       }
 
       for (const policyItem of config.policy) {
-        if (!pullRequest.isTagPolicyComplient(policyItem.tags)) {
+        if (!pullRequest.isTagPolicyCompliant(policyItem.tags)) {
           continue;
         }
 
