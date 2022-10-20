@@ -31,7 +31,7 @@ const app = (probot) => {
             return;
         }
         for (const policyItem of config.policy) {
-            if (!pullRequest.isTagPolicyComplient(policyItem.tags)) {
+            if (!pullRequest.isTagPolicyCompliant(policyItem.tags)) {
                 continue;
             }
             await pullRequest.unfreeze(policyItem.feedback.unFreezeState, context);
