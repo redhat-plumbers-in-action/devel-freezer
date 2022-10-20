@@ -14,27 +14,32 @@ describe('Metadata Object', () => {
   it<IMetadataTestContext>('can be instantiated', context =>
     context.metadata.map(metadataItem => expect(metadataItem).toBeDefined()));
 
-  it.todo<IMetadataTestContext>(
-    'is invalid' /*, async context => {
-    context.invalid.map(async item =>
-      expect(Metadata.validate(item)).resolves.toMatchSnapshot()
-    );
-  }*/
-  );
+  it.todo<IMetadataTestContext>('is invalid');
 
   test<IMetadataTestContext>('get tag()', context =>
     context.metadata.map(metadataItem =>
       expect(metadataItem.tag).toMatchSnapshot()
     ));
 
-  test.todo<IMetadataTestContext>('set tag()');
+  test<IMetadataTestContext>('set tag()', context =>
+    context.metadata.map(metadataItem => {
+      metadataItem.tag = 'newTag-aaa';
+      expect(metadataItem.tag).toEqual('newTag-aaa');
+    }));
 
   test<IMetadataTestContext>('get commentID()', context =>
     context.metadata.map(metadataItem =>
       expect(metadataItem.commentID).toMatchSnapshot()
     ));
 
-  test.todo<IMetadataTestContext>('set commentID()');
+  test<IMetadataTestContext>('set commentID()', context =>
+    context.metadata.map(metadataItem => {
+      const originalID = metadataItem.commentID;
+      const hadID = originalID == undefined ? false : true;
+
+      metadataItem.commentID = '42';
+      expect(metadataItem.commentID).toEqual(hadID ? originalID : '42');
+    }));
 
   test.todo<IMetadataTestContext>('getMetadata()');
   test.todo<IMetadataTestContext>('setMetadata()');
