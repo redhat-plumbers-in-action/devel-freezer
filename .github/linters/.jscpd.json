@@ -5,7 +5,7 @@
     "**/__snapshots__/**",
     "**/fixtures/**",
     "**/dist/**",
-    ".mergify.yml"
+    "**/.mergify.yml"
   ],
   "absolute": true
 }
