@@ -1,6 +1,9 @@
-import { Context } from 'probot';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 
-import { events } from './events';
+import { warning } from '@actions/core';
+
+const promiseExec = promisify(exec);
 
 export class Tag {
   private _latest: string | undefined;
@@ -21,16 +24,18 @@ export class Tag {
     );
   }
 
-  static async getLatestTag(
-    context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
-    }[keyof typeof events]
-  ) {
-    const tags = (await context.octokit.rest.repos.listTags(context.repo()))
-      .data;
+  static async getLatestTag() {
+    // Get latest tag sorted by date, currently impossible by using GitHub REST API
+    // Based on: https://gist.github.com/rponte/fdc0724dd984088606b0?permalink_comment_id=3475480#gistcomment-3475480
+    const { stdout, stderr } = await promiseExec(
+      'git tag --sort=committerdate | tail -1'
+    );
 
-    if (!tags || tags.length <= 0) return undefined;
+    const tag = stdout;
+    if (stderr) {
+      warning(`Unable to get latest tag - stderr: ${stderr}`);
+    }
 
-    return tags.shift()?.name;
+    return !tag || tag.length <= 0 ? undefined : tag;
   }
 }
