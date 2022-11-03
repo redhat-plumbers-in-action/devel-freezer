@@ -67,12 +67,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Development Freezer
         uses: redhat-plumbers-in-action/devel-freezer@latest
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+> **Note**: `fetch-depth: 0` is required in order to have access to full history including tags.
 
 ```yml
 policy:
