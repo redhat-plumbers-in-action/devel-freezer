@@ -13,7 +13,7 @@ const app = (probot) => {
             error(`Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`);
             return;
         }
-        const tag = new Tag(await Tag.getLatestTag(context));
+        const tag = new Tag(await Tag.getLatestTag());
         if (!tag.latest) {
             warning(`Repository doesn't have any tags or releases published.`);
             return;
