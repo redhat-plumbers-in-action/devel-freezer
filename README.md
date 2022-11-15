@@ -1,7 +1,6 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
-  <!-- TODO: Use new color of plumber
-  <img src="https://github.com/redhat-plumbers-in-action/team/blob/70f67465cc46e02febb16aaa1cace2ceb82e6e5c/members/pink-plumber.png" width="100" /> -->
+  <img src="https://github.com/redhat-plumbers-in-action/team/blob/30bfefc6f64a5e4f84dc58397dffcf4b829176f4/members/light-blue-plumber.png" width="100" />
   <h1 align="center">Devel Freezer</h1>
 </p>
 
