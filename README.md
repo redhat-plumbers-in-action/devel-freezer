@@ -70,7 +70,7 @@ jobs:
           fetch-depth: 0
 
       - name: Development Freezer
-        uses: redhat-plumbers-in-action/devel-freezer@latest
+        uses: redhat-plumbers-in-action/devel-freezer@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -109,7 +109,7 @@ Action currently accepts the following options:
 ```yml
 # ...
 
-- uses: redhat-plumbers-in-action/devel-freezer@latest
+- uses: redhat-plumbers-in-action/devel-freezer@v1
   with:
     token: <GitHub token>
 
