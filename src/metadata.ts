@@ -11,7 +11,7 @@ export class Metadata {
   private _tag: IMetadataObject['tag'];
   private _commentID: IMetadataObject['commentID'];
 
-  constructor(metadata: IMetadataObject) {
+  constructor(readonly issueNumber: number, metadata: IMetadataObject) {
     this._tag = metadata?.tag ?? undefined;
     this._commentID = metadata?.commentID ?? undefined;
   }
@@ -43,7 +43,8 @@ export class Metadata {
       await MetadataController.setMetadata(
         Metadata.metadataCommentID,
         this.commentID ?? '',
-        context as unknown as Context
+        context as unknown as Context,
+        this.issueNumber
       );
     }
 
@@ -51,7 +52,8 @@ export class Metadata {
     await MetadataController.setMetadata(
       Metadata.metadataFreezingTag,
       this.tag ?? '',
-      context as unknown as Context
+      context as unknown as Context,
+      this.issueNumber
     );
   }
 
@@ -59,16 +61,19 @@ export class Metadata {
   static readonly metadataCommentID = 'comment-id';
 
   static async getMetadata(
+    issueNumber: number,
     context: {
       [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
-    return new Metadata({
+    return new Metadata(issueNumber, {
       tag: await (MetadataController.getMetadata(
+        issueNumber,
         Metadata.metadataFreezingTag.toString(),
         context as unknown as Context
       ) as Promise<IMetadataObject['tag']>),
       commentID: await (MetadataController.getMetadata(
+        issueNumber,
         Metadata.metadataCommentID.toString(),
         context as unknown as Context
       ) as Promise<IMetadataObject['commentID']>),
@@ -83,9 +88,13 @@ export class Metadata {
 export class MetadataController {
   static readonly regex = /\n\n<!-- devel-freezer = (.*) -->/;
 
-  static async getMetadata(key: string, context: Context) {
+  static async getMetadata(issueNumber: number, key: string, context: Context) {
     const body =
-      (await context.octokit.issues.get(context.issue())).data.body || '';
+      (
+        await context.octokit.issues.get(
+          context.issue({ issue_number: issueNumber })
+        )
+      ).data.body || '';
 
     const match = body.match(MetadataController.regex);
 

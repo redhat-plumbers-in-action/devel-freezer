@@ -47,31 +47,99 @@ TBA ...
 
 ## Usage
 
+To setup Development freeze, we need three files:
+
+* Workflow that captures Pull Request metadata (number) and uploads this data as artifact
+* Workflow that runs on `workflow-run` trigger, downloads artifact and runs `devel_freezer` GitHub Action
+* `development-freeze` configuration
+
+> **Note**: Setup is complicated due to GitHub [permissions on `GITHUB_TOKEN`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token). When used in workflow executed from fork it has `read-only` permissions. By using `workflow-run` trigger we are able to [safely overcome this limitation](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) and it allow us to comment on Pull Requests.
+
 ```yml
-name: Development Freezer
+name: Gather Pull Request Metadata
+
 on:
   pull_request:
-    types: [ opened, reopened, synchronize ]
     branches: [ main ]
+
+env:
+  PULL_REQUEST_METADATA_DIR: pull_request
+  PULL_REQUEST_METADATA_FILE: metadata
+
+permissions:
+  contents: read
+
+jobs:
+  gather-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Store PR number in file
+        run: |
+          mkdir -p ./${{ env.PULL_REQUEST_METADATA_DIR }}
+          echo ${{ github.event.number }} > ./${{ env.PULL_REQUEST_METADATA_DIR }}/${{ env.PULL_REQUEST_METADATA_FILE }}
+
+      - name: Upload Pull Request Metadata artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PULL_REQUEST_METADATA_FILE }}
+          path: ${{ env.PULL_REQUEST_METADATA_DIR }}
+          retention-days: 1
+```
+
+```yml
+name: Development Freeze
+
+on:
+  workflow_run:
+    workflows: [ Gather Pull Request Metadata ]
+    types:
+      - completed
+
+env:
+  PULL_REQUEST_METADATA_DIR: pull_request
+  PULL_REQUEST_METADATA_FILE: metadata
 
 permissions:
   contents: read
 
 jobs:
   freezer:
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     
     permissions:
-      pull-requests: write
+      issues: write
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Download Pull Request Metadata artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.PULL_REQUEST_METADATA_FILE }}
+          path: ${{ env.PULL_REQUEST_METADATA_DIR }}
+          
+      - name: Expose Pull Request number from metadata
+        working-directory: ${{ env.PULL_REQUEST_METADATA_DIR }}
+        run: |
+          pr_number=$(cat ${{ env.PULL_REQUEST_METADATA_FILE }} | tr -d '\n')
+          echo "pr_number=pr_number" >> $GITHUB_OUTPUT
+
+      - name: Repository checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Development Freezer
         uses: redhat-plumbers-in-action/devel-freezer@v1
         with:
+          pr-number: ${{ env.pr_number }}
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -111,10 +179,18 @@ Action currently accepts the following options:
 
 - uses: redhat-plumbers-in-action/devel-freezer@v1
   with:
+    pr-number: <number>
     token: <GitHub token>
 
 # ...
 ```
+
+### pr-number
+
+Pull Request number.
+
+* default value: `${{ github.event.number }}`
+* requirements: `required`
 
 ### token
 

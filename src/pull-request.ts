@@ -7,7 +7,7 @@ import { Metadata } from './metadata';
 export class PullRequest {
   private _metadata: Metadata;
 
-  constructor(metadata: Metadata) {
+  constructor(readonly id: number, metadata: Metadata) {
     this._metadata = metadata;
   }
 
@@ -84,7 +84,9 @@ export class PullRequest {
     if (!body || body === '') return;
 
     return context.octokit.issues.createComment(
-      context.issue({
+      // !FIXME: This is wrong, don't use `as`
+      (context as Context<(typeof events.pull_request)[number]>).issue({
+        issue_number: this.id,
         body,
       })
     );
@@ -99,7 +101,8 @@ export class PullRequest {
     if (!this.metadata.commentID) return;
 
     return context.octokit.issues.updateComment(
-      context.issue({
+      // !FIXME: This is wrong, don't use `as`
+      (context as Context<(typeof events.pull_request)[number]>).issue({
         comment_id: +this.metadata.commentID,
         body,
       })
@@ -107,10 +110,11 @@ export class PullRequest {
   }
 
   static async getPullRequest(
+    id: number,
     context: {
       [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
-    return new PullRequest(await Metadata.getMetadata(context));
+    return new PullRequest(id, await Metadata.getMetadata(id, context));
   }
 }

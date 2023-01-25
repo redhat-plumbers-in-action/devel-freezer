@@ -5,5 +5,6 @@ export const events = {
         'pull_request.reopened',
         'pull_request.synchronize',
     ],
+    workflow_run: ['workflow_run'],
 };
 //# sourceMappingURL=events.js.map

@@ -6,4 +6,5 @@ export const events = {
     'pull_request.reopened' as const,
     'pull_request.synchronize' as const,
   ],
+  workflow_run: ['workflow_run' as const],
 };

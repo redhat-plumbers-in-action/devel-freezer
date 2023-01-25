@@ -5,9 +5,10 @@ interface IMetadataObject {
     commentID: string | undefined;
 }
 export declare class Metadata {
+    readonly issueNumber: number;
     private _tag;
     private _commentID;
-    constructor(metadata: IMetadataObject);
+    constructor(issueNumber: number, metadata: IMetadataObject);
     get tag(): IMetadataObject['tag'];
     set tag(value: IMetadataObject['tag']);
     get commentID(): IMetadataObject['commentID'];
@@ -17,7 +18,7 @@ export declare class Metadata {
     }[keyof typeof events]): Promise<void>;
     static readonly metadataFreezingTag = "freezing-tag";
     static readonly metadataCommentID = "comment-id";
-    static getMetadata(context: {
+    static getMetadata(issueNumber: number, context: {
         [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<Metadata>;
 }
@@ -26,7 +27,7 @@ export declare class Metadata {
  */
 export declare class MetadataController {
     static readonly regex: RegExp;
-    static getMetadata(key: string, context: Context): Promise<any>;
+    static getMetadata(issueNumber: number, key: string, context: Context): Promise<any>;
     static setMetadata(key: string, value: string, context: Context, issueNumber?: number): Promise<import("@octokit/plugin-paginate-rest/dist-types/types").OctokitResponse<{
         id: number;
         node_id: string;

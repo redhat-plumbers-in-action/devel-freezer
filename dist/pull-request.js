@@ -1,7 +1,8 @@
 import { warning } from '@actions/core';
 import { Metadata } from './metadata';
 export class PullRequest {
-    constructor(metadata) {
+    constructor(id, metadata) {
+        this.id = id;
         this._metadata = metadata;
     }
     get metadata() {
@@ -43,20 +44,25 @@ export class PullRequest {
     createComment(body, context) {
         if (!body || body === '')
             return;
-        return context.octokit.issues.createComment(context.issue({
+        return context.octokit.issues.createComment(
+        // !FIXME: This is wrong, don't use `as`
+        context.issue({
+            issue_number: this.id,
             body,
         }));
     }
     async updateComment(body, context) {
         if (!this.metadata.commentID)
             return;
-        return context.octokit.issues.updateComment(context.issue({
+        return context.octokit.issues.updateComment(
+        // !FIXME: This is wrong, don't use `as`
+        context.issue({
             comment_id: +this.metadata.commentID,
             body,
         }));
     }
-    static async getPullRequest(context) {
-        return new PullRequest(await Metadata.getMetadata(context));
+    static async getPullRequest(id, context) {
+        return new PullRequest(id, await Metadata.getMetadata(id, context));
     }
 }
 //# sourceMappingURL=pull-request.js.map
