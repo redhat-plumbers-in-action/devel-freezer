@@ -40,7 +40,8 @@ describe('Pull Request Object', () => {
     });
 
     const test_pr = new PullRequest(
-      new Metadata({ tag: undefined, commentID: undefined })
+      0,
+      new Metadata(0, { tag: undefined, commentID: undefined })
     );
 
     // policy with list of tags

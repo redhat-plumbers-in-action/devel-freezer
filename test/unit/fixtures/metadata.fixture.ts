@@ -7,10 +7,10 @@ export interface IMetadataTestContext {
 
 export const metadataContextFixture: IMetadataTestContext = {
   metadata: [
-    new Metadata({ tag: undefined, commentID: undefined }),
-    new Metadata({ tag: 'v1', commentID: undefined }),
-    new Metadata({ tag: undefined, commentID: '123456789' }),
-    new Metadata({ tag: 'v1', commentID: '123456789' }),
+    new Metadata(0, { tag: undefined, commentID: undefined }),
+    new Metadata(0, { tag: 'v1', commentID: undefined }),
+    new Metadata(0, { tag: undefined, commentID: '123456789' }),
+    new Metadata(0, { tag: 'v1', commentID: '123456789' }),
   ],
 
   invalid: [

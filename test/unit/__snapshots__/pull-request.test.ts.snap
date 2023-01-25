@@ -4,6 +4,7 @@ exports[`Pull Request Object > get metadata() 1`] = `
 _Metadata {
   "_commentID": undefined,
   "_tag": undefined,
+  "issueNumber": 0,
 }
 `;
 
@@ -11,6 +12,7 @@ exports[`Pull Request Object > get metadata() 2`] = `
 _Metadata {
   "_commentID": undefined,
   "_tag": "v1",
+  "issueNumber": 0,
 }
 `;
 
@@ -18,6 +20,7 @@ exports[`Pull Request Object > get metadata() 3`] = `
 _Metadata {
   "_commentID": "123456789",
   "_tag": undefined,
+  "issueNumber": 0,
 }
 `;
 
@@ -25,6 +28,7 @@ exports[`Pull Request Object > get metadata() 4`] = `
 _Metadata {
   "_commentID": "123456789",
   "_tag": "v1",
+  "issueNumber": 0,
 }
 `;
 
@@ -32,6 +36,7 @@ exports[`Pull Request Object > get metadata() 5`] = `
 _Metadata {
   "_commentID": undefined,
   "_tag": "alpha",
+  "issueNumber": 0,
 }
 `;
 
@@ -39,6 +44,7 @@ exports[`Pull Request Object > get metadata() 6`] = `
 _Metadata {
   "_commentID": undefined,
   "_tag": "beta",
+  "issueNumber": 0,
 }
 `;
 
@@ -46,6 +52,7 @@ exports[`Pull Request Object > get metadata() 7`] = `
 _Metadata {
   "_commentID": undefined,
   "_tag": "v250-rc1",
+  "issueNumber": 0,
 }
 `;
 

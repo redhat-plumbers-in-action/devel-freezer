@@ -2,8 +2,9 @@ import { Context } from 'probot';
 import { events } from './events';
 import { Metadata } from './metadata';
 export declare class PullRequest {
+    readonly id: number;
     private _metadata;
-    constructor(metadata: Metadata);
+    constructor(id: number, metadata: Metadata);
     get metadata(): Metadata;
     isFreezed(): boolean;
     isTagPolicyCompliant(tagPolicy: string[], tag?: string): boolean;
@@ -16,7 +17,7 @@ export declare class PullRequest {
     private publishComment;
     private createComment;
     private updateComment;
-    static getPullRequest(context: {
+    static getPullRequest(id: number, context: {
         [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<PullRequest>;
 }

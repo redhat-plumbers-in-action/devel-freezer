@@ -1,6 +1,7 @@
 export class Metadata {
-    constructor(metadata) {
+    constructor(issueNumber, metadata) {
         var _a, _b;
+        this.issueNumber = issueNumber;
         this._tag = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.tag) !== null && _a !== void 0 ? _a : undefined;
         this._commentID = (_b = metadata === null || metadata === void 0 ? void 0 : metadata.commentID) !== null && _b !== void 0 ? _b : undefined;
     }
@@ -21,15 +22,15 @@ export class Metadata {
     async setMetadata(context) {
         var _a, _b;
         if (this.commentID !== undefined) {
-            await MetadataController.setMetadata(Metadata.metadataCommentID, (_a = this.commentID) !== null && _a !== void 0 ? _a : '', context);
+            await MetadataController.setMetadata(Metadata.metadataCommentID, (_a = this.commentID) !== null && _a !== void 0 ? _a : '', context, this.issueNumber);
         }
         // TODO: clear tag when un-freezed
-        await MetadataController.setMetadata(Metadata.metadataFreezingTag, (_b = this.tag) !== null && _b !== void 0 ? _b : '', context);
+        await MetadataController.setMetadata(Metadata.metadataFreezingTag, (_b = this.tag) !== null && _b !== void 0 ? _b : '', context, this.issueNumber);
     }
-    static async getMetadata(context) {
-        return new Metadata({
-            tag: await MetadataController.getMetadata(Metadata.metadataFreezingTag.toString(), context),
-            commentID: await MetadataController.getMetadata(Metadata.metadataCommentID.toString(), context),
+    static async getMetadata(issueNumber, context) {
+        return new Metadata(issueNumber, {
+            tag: await MetadataController.getMetadata(issueNumber, Metadata.metadataFreezingTag.toString(), context),
+            commentID: await MetadataController.getMetadata(issueNumber, Metadata.metadataCommentID.toString(), context),
         });
     }
 }
@@ -40,8 +41,8 @@ Metadata.metadataCommentID = 'comment-id';
  */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class MetadataController {
-    static async getMetadata(key, context) {
-        const body = (await context.octokit.issues.get(context.issue())).data.body || '';
+    static async getMetadata(issueNumber, key, context) {
+        const body = (await context.octokit.issues.get(context.issue({ issue_number: issueNumber }))).data.body || '';
         const match = body.match(MetadataController.regex);
         if (match) {
             const data = JSON.parse(match[1]);

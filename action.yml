@@ -8,6 +8,10 @@ branding:
   color: blue
 
 inputs:
+  pr-number:
+    required: true
+    default: ${{ github.event.number }}
+    description: Pull Request number
   token:
     required: true
     description: GitHub token used to set issue labels
