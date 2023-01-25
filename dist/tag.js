@@ -16,10 +16,9 @@ export class Tag {
     }
     static async getLatestTag() {
         // Get latest tag sorted by date, currently impossible by using GitHub REST API
-        // Based on: https://gist.github.com/rponte/fdc0724dd984088606b0?permalink_comment_id=3475480#gistcomment-3475480
         const { stdout, stderr } = await promiseExec(
         // Get rid of new lines - it causes issues when regex is to explicit (including `$`)
-        `git tag --sort=committerdate | tail -1 | tr -d '\n'`);
+        `git describe --tags --abbrev=0 | tr -d '\n'`);
         const tag = stdout;
         if (stderr) {
             warning(`Unable to get latest tag - stderr: ${stderr}`);
