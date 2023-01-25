@@ -32,7 +32,7 @@ export class PullRequest {
     content: string,
     freezingTag: string,
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     const id = await this.publishComment(content, context);
@@ -45,7 +45,7 @@ export class PullRequest {
   async unfreeze(
     content: string,
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     const id = await this.publishComment(content, context);
@@ -57,7 +57,7 @@ export class PullRequest {
   private async publishComment(
     content: string,
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     if (this.metadata.commentID) {
@@ -78,7 +78,7 @@ export class PullRequest {
   private createComment(
     body: string,
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     if (!body || body === '') return;
@@ -93,7 +93,7 @@ export class PullRequest {
   private async updateComment(
     body: string,
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     if (!this.metadata.commentID) return;
@@ -108,7 +108,7 @@ export class PullRequest {
 
   static async getPullRequest(
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     return new PullRequest(await Metadata.getMetadata(context));

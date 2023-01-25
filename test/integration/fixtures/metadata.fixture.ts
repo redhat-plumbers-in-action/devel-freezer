@@ -12,7 +12,7 @@ import payloadPullRequestSynchronize from '../fixtures/payloads/pull-request-syn
 
 export interface IMetadataTestContext {
   payloads: {
-    type: typeof events.pull_request[number];
+    type: (typeof events.pull_request)[number];
     payload:
       | PullRequestOpenedEvent
       | PullRequestReopenedEvent

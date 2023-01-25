@@ -13,12 +13,12 @@ export declare class Metadata {
     get commentID(): IMetadataObject['commentID'];
     set commentID(value: IMetadataObject['commentID']);
     setMetadata(context: {
-        [K in keyof typeof events]: Context<typeof events[K][number]>;
+        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<void>;
     static readonly metadataFreezingTag = "freezing-tag";
     static readonly metadataCommentID = "comment-id";
     static getMetadata(context: {
-        [K in keyof typeof events]: Context<typeof events[K][number]>;
+        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<Metadata>;
 }
 /**
