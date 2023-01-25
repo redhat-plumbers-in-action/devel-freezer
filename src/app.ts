@@ -10,7 +10,7 @@ import { Tag } from './tag';
 const app = (probot: Probot) => {
   probot.on(
     events.pull_request,
-    async (context: Context<typeof events.pull_request[number]>) => {
+    async (context: Context<(typeof events.pull_request)[number]>) => {
       const config = await Config.getConfig(context);
 
       // TODO: Proper error handling

@@ -36,7 +36,7 @@ export class Metadata {
 
   async setMetadata(
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     if (this.commentID !== undefined) {
@@ -60,7 +60,7 @@ export class Metadata {
 
   static async getMetadata(
     context: {
-      [K in keyof typeof events]: Context<typeof events[K][number]>;
+      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]
   ) {
     return new Metadata({

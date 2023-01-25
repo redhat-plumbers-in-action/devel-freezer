@@ -8,15 +8,15 @@ export declare class PullRequest {
     isFreezed(): boolean;
     isTagPolicyCompliant(tagPolicy: string[], tag?: string): boolean;
     freeze(content: string, freezingTag: string, context: {
-        [K in keyof typeof events]: Context<typeof events[K][number]>;
+        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<void>;
     unfreeze(content: string, context: {
-        [K in keyof typeof events]: Context<typeof events[K][number]>;
+        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<void>;
     private publishComment;
     private createComment;
     private updateComment;
     static getPullRequest(context: {
-        [K in keyof typeof events]: Context<typeof events[K][number]>;
+        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<PullRequest>;
 }

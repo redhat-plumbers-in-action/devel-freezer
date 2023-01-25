@@ -6,7 +6,7 @@ export declare class Config {
     constructor(config: TConfigObject);
     get policy(): PolicyItem[];
     static getConfig(context: {
-        [K in keyof typeof events]: Context<typeof events[K][number]>;
+        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
     }[keyof typeof events]): Promise<Config>;
     static isConfigEmpty(config: TConfigObject | null | unknown): boolean;
     static validate(instance: Config): Promise<{
