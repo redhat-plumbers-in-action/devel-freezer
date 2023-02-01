@@ -1,7 +1,6 @@
 {
   "name": "devel-freezer",
   "version": "1.0.0",
-  "private": false,
   "description": "Comment on newly created pull requests, when project is in development freeze",
   "main": "dist/main.js",
   "scripts": {
@@ -26,6 +25,7 @@
   ],
   "author": "jamacku@redhat.com",
   "license": "MIT",
+  "packageManager": "yarn@3.3.1",
   "dependencies": {
     "@actions/core": "^1.9.0",
     "@octokit/rest": "^19.0.3",
