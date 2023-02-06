@@ -728,13 +728,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/webhooks-types@npm:6.9.0":
-  version: 6.9.0
-  resolution: "@octokit/webhooks-types@npm:6.9.0"
-  checksum: f914adfe6ad4353081a71c23e50d9862dcd9557d692f4508644469a17b49f46b5f362959747d1ec9703d1da7014e209245d5a6e0e3aa0a6ed27eddc15afdcfdb
-  languageName: node
-  linkType: hard
-
 "@octokit/webhooks@npm:10.7.0":
   version: 10.7.0
   resolution: "@octokit/webhooks@npm:10.7.0"
@@ -2106,7 +2099,7 @@ __metadata:
     "@actions/core": ^1.9.0
     "@octokit/rest": ^19.0.3
     "@octokit/webhooks": 10.7.0
-    "@octokit/webhooks-types": 6.9.0
+    "@octokit/webhooks-types": 6.10.0
     "@probot/adapter-github-actions": ^3.1.1
     "@types/node": 18.11.19
     "@typescript-eslint/eslint-plugin": ^5.50.0
