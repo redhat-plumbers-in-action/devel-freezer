@@ -33,7 +33,7 @@
     "class-validator": "^0.14.0"
   },
   "devDependencies": {
-    "@octokit/webhooks": "10.7.0",
+    "@octokit/webhooks": "10.9.1",
     "@octokit/webhooks-types": "6.10.0",
     "@types/node": "18.15.12",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
