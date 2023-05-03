@@ -41,7 +41,7 @@ export class PullRequest {
         }
         return commentPayload.id;
     }
-    createComment(body, context) {
+    async createComment(body, context) {
         if (!body || body === '')
             return;
         return context.octokit.issues.createComment(
