@@ -776,15 +776,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/webhooks@npm:10.9.1":
-  version: 10.9.1
-  resolution: "@octokit/webhooks@npm:10.9.1"
+"@octokit/webhooks-types@npm:7.0.3":
+  version: 7.0.3
+  resolution: "@octokit/webhooks-types@npm:7.0.3"
+  checksum: 2edcfc275e413ff488742aa44ccc9fa688673b5c81ceaea3aad9eb39b6508628fdc721e863cab1d4d509f7ec4d2d4e3a02aa59281345df3d54cba139507e7c18
+  languageName: node
+  linkType: hard
+
+"@octokit/webhooks@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@octokit/webhooks@npm:11.1.1"
   dependencies:
     "@octokit/request-error": ^3.0.0
     "@octokit/webhooks-methods": ^3.0.0
-    "@octokit/webhooks-types": 6.11.0
+    "@octokit/webhooks-types": 7.0.3
     aggregate-error: ^3.1.0
-  checksum: 3ee4ae98777653d629068c7914a8df29affb399a385ae55954953afa0caa856bab0cf8e92cfa80d36db0e7dd08eada0a3597cffd2f503a9078410660f0609161
+  checksum: 5eeb1f2cbc2bced975595a4e02d6e5c362304ed3890f99cd26d120932cb6ac48a66915d9baeb976a7f0d4ae1995633b979fc5aadc7f0eb3a333e7dcc842848b8
   languageName: node
   linkType: hard
 
@@ -2167,7 +2174,7 @@ __metadata:
   dependencies:
     "@actions/core": ^1.9.0
     "@octokit/rest": ^19.0.3
-    "@octokit/webhooks": 10.9.1
+    "@octokit/webhooks": 11.1.1
     "@octokit/webhooks-types": 6.11.0
     "@probot/adapter-github-actions": ^3.1.1
     "@types/node": 18.16.12
