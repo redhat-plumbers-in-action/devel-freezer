@@ -2284,7 +2284,7 @@ __metadata:
     eslint: 8.43.0
     eslint-plugin-prettier: 4.2.1
     js-yaml: 4.1.0
-    nock: 13.3.1
+    nock: 13.3.8
     prettier: 2.8.8
     ts-node: 10.9.1
     typescript: 5.1.6
@@ -4078,15 +4078,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:13.3.1":
-  version: 13.3.1
-  resolution: "nock@npm:13.3.1"
+"nock@npm:13.3.8":
+  version: 13.3.8
+  resolution: "nock@npm:13.3.8"
   dependencies:
     debug: ^4.1.0
     json-stringify-safe: ^5.0.1
-    lodash: ^4.17.21
     propagate: ^2.0.0
-  checksum: 0f2a73e8432f6b5650656c53eef99f9e5bbde3df538dc2f07057edc4438cfc61a394c9d06dd82e60f6e86d42433f20f3c04364a1f088beee7bf03a24e3f0fdd0
+  checksum: 98f7d9d1c6b4fad560d7f1033705f9a0318e288060c10e36973d1798d6c824fee1f23a9ecbb1118bf70068f58bb04eaa50c5d046f5cf0ceaf4a2dc76fe7a82b2
   languageName: node
   linkType: hard
 
