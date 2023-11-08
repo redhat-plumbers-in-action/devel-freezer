@@ -4303,18 +4303,21 @@ class PullRequest {
         return !!this.metadata.commentID && !!this.metadata.tag;
     }
     isTagPolicyCompliant(tagPolicy, tag) {
+        (0,core.debug)(`Checking tag policy for PR: #${this.id}`);
         const freezingTag = tag !== null && tag !== void 0 ? tag : this.metadata.tag;
         if (freezingTag === undefined)
             false;
         return tagPolicy.some(regex => new RegExp(regex).test(freezingTag));
     }
     async freeze(content, freezingTag) {
+        (0,core.debug)(`Freezing PR: #${this.id}`);
         const id = await this.publishComment(content);
         this.metadata.commentID = id === undefined ? id : id.toString();
         this.metadata.tag = freezingTag;
         await this.metadata.setMetadata();
     }
     async unfreeze(content) {
+        (0,core.debug)(`Unfreezing PR: #${this.id}`);
         const id = await this.publishComment(content);
         this.metadata.commentID = id === undefined ? id : id.toString();
         await this.metadata.setMetadata();
@@ -4335,12 +4338,14 @@ class PullRequest {
     async createComment(body) {
         if (!body || body === '')
             return;
+        (0,core.debug)(`Creating comment for PR: #${this.id}`);
         const { data } = await this.octokit.request('POST /repos/{owner}/{repo}/issues/comments', Object.assign(Object.assign({}, github.context.repo), { issue_number: this.id, body }));
         return data;
     }
     async updateComment(body) {
         if (!this.metadata.commentID)
             return;
+        (0,core.debug)(`Updating comment with ID: ${this.metadata.commentID}`);
         const { data } = await this.octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', Object.assign(Object.assign({}, github.context.repo), { comment_id: +this.metadata.commentID, body }));
         return data;
     }

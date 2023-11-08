@@ -1,4 +1,4 @@
-import { warning } from '@actions/core';
+import { debug, warning } from '@actions/core';
 import { context } from '@actions/github';
 
 import { Metadata } from './metadata';
@@ -24,6 +24,7 @@ export class PullRequest {
   }
 
   isTagPolicyCompliant(tagPolicy: string[], tag?: string) {
+    debug(`Checking tag policy for PR: #${this.id}`);
     const freezingTag = tag ?? this.metadata.tag;
     if (freezingTag === undefined) false;
 
@@ -33,6 +34,7 @@ export class PullRequest {
   }
 
   async freeze(content: string, freezingTag: string) {
+    debug(`Freezing PR: #${this.id}`);
     const id = await this.publishComment(content);
 
     this.metadata.commentID = id === undefined ? id : id.toString();
@@ -41,6 +43,7 @@ export class PullRequest {
   }
 
   async unfreeze(content: string) {
+    debug(`Unfreezing PR: #${this.id}`);
     const id = await this.publishComment(content);
 
     this.metadata.commentID = id === undefined ? id : id.toString();
@@ -66,6 +69,8 @@ export class PullRequest {
   async createComment(body: string) {
     if (!body || body === '') return;
 
+    debug(`Creating comment for PR: #${this.id}`);
+
     const { data } = await this.octokit.request(
       'POST /repos/{owner}/{repo}/issues/comments',
       {
@@ -80,6 +85,8 @@ export class PullRequest {
 
   private async updateComment(body: string) {
     if (!this.metadata.commentID) return;
+
+    debug(`Updating comment with ID: ${this.metadata.commentID}`);
 
     const { data } = await this.octokit.request(
       'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
