@@ -32,7 +32,6 @@
     "@octokit/core": "^5.0.1",
     "@octokit/rest": "^20.0.2",
     "@probot/octokit-plugin-config": "^2.0.0",
-    "class-validator": "^0.14.0",
     "issue-metadata": "^0.1.8",
     "zod": "^3.22.4"
   },

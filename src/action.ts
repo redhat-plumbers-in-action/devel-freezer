@@ -1,5 +1,4 @@
-import { debug, error, warning, getInput } from '@actions/core';
-import { validateOrReject } from 'class-validator';
+import { debug, warning, getInput } from '@actions/core';
 
 import { Config } from './config';
 import { CustomOctokit } from './octokit';
@@ -8,16 +7,6 @@ import { Tag } from './tag';
 
 async function action(octokit: CustomOctokit) /*: Promise<string>*/ {
   const config = await Config.getConfig(octokit);
-
-  // TODO: Proper error handling
-  await validateOrReject(config);
-
-  if (!config) {
-    error(
-      `Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`
-    );
-    return;
-  }
 
   const tag = new Tag(await Tag.getLatestTag());
 
@@ -38,7 +27,7 @@ async function action(octokit: CustomOctokit) /*: Promise<string>*/ {
       continue;
     }
 
-    await pullRequest.freeze(policyItem.feedback.frozenState, tag.latest);
+    await pullRequest.freeze(policyItem.feedback['frozen-state'], tag.latest);
     return;
   }
 
@@ -51,7 +40,7 @@ async function action(octokit: CustomOctokit) /*: Promise<string>*/ {
       continue;
     }
 
-    await pullRequest.unfreeze(policyItem.feedback.unFreezeState);
+    await pullRequest.unfreeze(policyItem.feedback['unfreeze-state']);
     return;
   }
 

@@ -1,16 +1,9 @@
-import { debug, error, warning, getInput } from '@actions/core';
-import { validateOrReject } from 'class-validator';
+import { debug, warning, getInput } from '@actions/core';
 import { Config } from './config';
 import { PullRequest } from './pull-request';
 import { Tag } from './tag';
 async function action(octokit) {
     const config = await Config.getConfig(octokit);
-    // TODO: Proper error handling
-    await validateOrReject(config);
-    if (!config) {
-        error(`Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`);
-        return;
-    }
     const tag = new Tag(await Tag.getLatestTag());
     if (!tag.latest) {
         warning(`Repository doesn't have any tags or releases published.`);
@@ -22,7 +15,7 @@ async function action(octokit) {
         if (!tag.isFreezed(policyItem.tags)) {
             continue;
         }
-        await pullRequest.freeze(policyItem.feedback.frozenState, tag.latest);
+        await pullRequest.freeze(policyItem.feedback['frozen-state'], tag.latest);
         return;
     }
     if (!pullRequest.isFreezed()) {
@@ -32,7 +25,7 @@ async function action(octokit) {
         if (!pullRequest.isTagPolicyCompliant(policyItem.tags)) {
             continue;
         }
-        await pullRequest.unfreeze(policyItem.feedback.unFreezeState);
+        await pullRequest.unfreeze(policyItem.feedback['unfreeze-state']);
         return;
     }
     debug(`The latest tag doesn't match the requirements for a development freeze.`);
