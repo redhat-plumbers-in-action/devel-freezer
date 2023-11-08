@@ -11,7 +11,10 @@ export class Metadata {
   private _tag: IMetadataObject['tag'];
   private _commentID: IMetadataObject['commentID'];
 
-  constructor(readonly issueNumber: number, metadata: IMetadataObject) {
+  constructor(
+    readonly issueNumber: number,
+    metadata: IMetadataObject
+  ) {
     this._tag = metadata?.tag ?? undefined;
     this._commentID = metadata?.commentID ?? undefined;
   }
