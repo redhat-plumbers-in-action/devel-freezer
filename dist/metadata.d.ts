@@ -28,7 +28,7 @@ export declare class Metadata {
 export declare class MetadataController {
     static readonly regex: RegExp;
     static getMetadata(issueNumber: number, key: string, context: Context): Promise<any>;
-    static setMetadata(key: string, value: string, context: Context, issueNumber?: number): Promise<import("@octokit/plugin-paginate-rest/dist-types/types").OctokitResponse<{
+    static setMetadata(key: string, value: string, context: Context, issueNumber?: number): Promise<import("@octokit/types").OctokitResponse<{
         id: number;
         node_id: string;
         url: string;

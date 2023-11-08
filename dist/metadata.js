@@ -1,4 +1,4 @@
-class Metadata {
+export class Metadata {
     constructor(issueNumber, metadata) {
         var _a, _b;
         this.issueNumber = issueNumber;
@@ -36,12 +36,11 @@ class Metadata {
 }
 Metadata.metadataFreezingTag = 'freezing-tag';
 Metadata.metadataCommentID = 'comment-id';
-export { Metadata };
 /**
  * Based on probot-metadata - https://github.com/probot/metadata
  */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class MetadataController {
+export class MetadataController {
     static async getMetadata(issueNumber, key, context) {
         const body = (await context.octokit.issues.get(context.issue({ issue_number: issueNumber }))).data.body || '';
         const match = body.match(MetadataController.regex);
@@ -69,5 +68,4 @@ class MetadataController {
     }
 }
 MetadataController.regex = /\n\n<!-- devel-freezer = (.*) -->/;
-export { MetadataController };
 //# sourceMappingURL=metadata.js.map

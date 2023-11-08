@@ -7,7 +7,10 @@ import { Metadata } from './metadata';
 export class PullRequest {
   private _metadata: Metadata;
 
-  constructor(readonly id: number, metadata: Metadata) {
+  constructor(
+    readonly id: number,
+    metadata: Metadata
+  ) {
     this._metadata = metadata;
   }
 
