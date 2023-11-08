@@ -56,7 +56,7 @@ export class PullRequest {
       return;
     }
 
-    const commentPayload = (await this.createComment(content))?.data;
+    const commentPayload = await this.createComment(content);
 
     if (!commentPayload) {
       warning(`Failed to create comment.`);
@@ -72,7 +72,7 @@ export class PullRequest {
     debug(`Creating comment for PR: #${this.id}`);
 
     const { data } = await this.octokit.request(
-      'POST /repos/{owner}/{repo}/issues/comments',
+      'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
       {
         ...context.repo,
         issue_number: this.id,

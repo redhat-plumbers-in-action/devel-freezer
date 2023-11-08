@@ -34,12 +34,11 @@ export class PullRequest {
         await this.metadata.setMetadata();
     }
     async publishComment(content) {
-        var _a;
         if (this.metadata.commentID) {
             this.updateComment(content);
             return;
         }
-        const commentPayload = (_a = (await this.createComment(content))) === null || _a === void 0 ? void 0 : _a.data;
+        const commentPayload = await this.createComment(content);
         if (!commentPayload) {
             warning(`Failed to create comment.`);
             return;
@@ -50,7 +49,7 @@ export class PullRequest {
         if (!body || body === '')
             return;
         debug(`Creating comment for PR: #${this.id}`);
-        const { data } = await this.octokit.request('POST /repos/{owner}/{repo}/issues/comments', Object.assign(Object.assign({}, context.repo), { issue_number: this.id, body }));
+        const { data } = await this.octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', Object.assign(Object.assign({}, context.repo), { issue_number: this.id, body }));
         return data;
     }
     async updateComment(body) {
