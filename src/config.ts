@@ -1,3 +1,5 @@
+import { debug, getInput } from '@actions/core';
+import { context } from '@actions/github';
 import {
   ArrayMinSize,
   IsArray,
@@ -6,9 +8,8 @@ import {
   validate,
   ValidateNested,
 } from 'class-validator';
-import { Context } from 'probot';
 
-import { events } from './events';
+import { CustomOctokit } from './octokit';
 import { ValidationFeedback } from './validation-feedback';
 
 import { TConfigObject, TFeedback, TPolicyItem } from './types.d';
@@ -29,14 +30,17 @@ export class Config {
     return this._policy;
   }
 
-  static async getConfig(
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
-    const retrievedConfig = await context.config<TConfigObject>(
-      'development-freeze.yml'
-    );
+  static async getConfig(octokit: CustomOctokit) {
+    const path = getInput('config-path', { required: true });
+
+    const retrievedConfig = (
+      await octokit.config.get({
+        ...context.repo,
+        path,
+      })
+    ).config;
+
+    debug(`Configuration '${path}': ${JSON.stringify(retrievedConfig)}`);
 
     if (Config.isConfigEmpty(retrievedConfig)) {
       throw new Error(

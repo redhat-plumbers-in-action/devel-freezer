@@ -4,6 +4,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+import { debug, getInput } from '@actions/core';
+import { context } from '@actions/github';
 import { ArrayMinSize, IsArray, IsString, MinLength, validate, ValidateNested, } from 'class-validator';
 import { ValidationFeedback } from './validation-feedback';
 export class Config {
@@ -15,8 +17,10 @@ export class Config {
     get policy() {
         return this._policy;
     }
-    static async getConfig(context) {
-        const retrievedConfig = await context.config('development-freeze.yml');
+    static async getConfig(octokit) {
+        const path = getInput('config-path', { required: true });
+        const retrievedConfig = (await octokit.config.get(Object.assign(Object.assign({}, context.repo), { path }))).config;
+        debug(`Configuration '${path}': ${JSON.stringify(retrievedConfig)}`);
         if (Config.isConfigEmpty(retrievedConfig)) {
             throw new Error(`Missing configuration. Please setup 'devel-freezer' Action using 'development-freeze.yml' file.`);
         }

@@ -1,7 +1,12 @@
+import { getInput } from '@actions/core';
+import { context } from '@actions/github';
+import MetadataController from 'issue-metadata';
+import { z } from 'zod';
 export class Metadata {
-    constructor(issueNumber, metadata) {
+    constructor(issueNumber, controller, metadata) {
         var _a, _b;
         this.issueNumber = issueNumber;
+        this.controller = controller;
         this._tag = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.tag) !== null && _a !== void 0 ? _a : undefined;
         this._commentID = (_b = metadata === null || metadata === void 0 ? void 0 : metadata.commentID) !== null && _b !== void 0 ? _b : undefined;
     }
@@ -19,53 +24,30 @@ export class Metadata {
             this._commentID = value;
         }
     }
-    async setMetadata(context) {
+    async setMetadata() {
         var _a, _b;
         if (this.commentID !== undefined) {
-            await MetadataController.setMetadata(Metadata.metadataCommentID, (_a = this.commentID) !== null && _a !== void 0 ? _a : '', context, this.issueNumber);
+            await this.controller.setMetadata(this.issueNumber, Metadata.metadataCommentID, (_a = this.commentID) !== null && _a !== void 0 ? _a : '');
         }
         // TODO: clear tag when un-freezed
-        await MetadataController.setMetadata(Metadata.metadataFreezingTag, (_b = this.tag) !== null && _b !== void 0 ? _b : '', context, this.issueNumber);
+        await this.controller.setMetadata(this.issueNumber, Metadata.metadataFreezingTag, (_b = this.tag) !== null && _b !== void 0 ? _b : '');
     }
-    static async getMetadata(issueNumber, context) {
-        return new Metadata(issueNumber, {
-            tag: await MetadataController.getMetadata(issueNumber, Metadata.metadataFreezingTag.toString(), context),
-            commentID: await MetadataController.getMetadata(issueNumber, Metadata.metadataCommentID.toString(), context),
+    static async getMetadata(issueNumber) {
+        const controller = new MetadataController('devel-freezer', Object.assign(Object.assign({}, context.repo), { headers: {
+                authorization: `Bearer ${getInput('token', { required: true })}`,
+            } }));
+        const parsedTag = z
+            .string()
+            .safeParse(await controller.getMetadata(issueNumber, Metadata.metadataFreezingTag));
+        const parsedCommentID = z
+            .string()
+            .safeParse(await controller.getMetadata(issueNumber, Metadata.metadataCommentID));
+        return new Metadata(issueNumber, controller, {
+            tag: parsedTag.success ? parsedTag.data : undefined,
+            commentID: parsedCommentID.success ? parsedCommentID.data : undefined,
         });
     }
 }
 Metadata.metadataFreezingTag = 'freezing-tag';
 Metadata.metadataCommentID = 'comment-id';
-/**
- * Based on probot-metadata - https://github.com/probot/metadata
- */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
-export class MetadataController {
-    static async getMetadata(issueNumber, key, context) {
-        const body = (await context.octokit.issues.get(context.issue({ issue_number: issueNumber }))).data.body || '';
-        const match = body.match(MetadataController.regex);
-        if (match) {
-            const data = JSON.parse(match[1]);
-            return key ? data && data[key] : data;
-        }
-    }
-    static async setMetadata(key, value, context, issueNumber) {
-        let body = (await context.octokit.issues.get(context.issue(issueNumber ? { issue_number: issueNumber } : {}))).data.body || '';
-        let data = {};
-        body = body.replace(MetadataController.regex, (_, json) => {
-            data = JSON.parse(json);
-            return '';
-        });
-        if (!data)
-            data = {};
-        if (typeof key === 'object') {
-            Object.assign(data, key);
-        }
-        else {
-            data[key] = value;
-        }
-        return context.octokit.issues.update(context.issue(Object.assign({ body: `${body}\n\n<!-- devel-freezer = ${JSON.stringify(data)} -->` }, (issueNumber ? { issue_number: issueNumber } : {}))));
-    }
-}
-MetadataController.regex = /\n\n<!-- devel-freezer = (.*) -->/;
 //# sourceMappingURL=metadata.js.map
