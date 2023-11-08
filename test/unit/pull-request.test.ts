@@ -13,7 +13,6 @@ import { PullRequest } from '../../src/pull-request';
 describe('Pull Request Object', () => {
   beforeEach<IPullRequestTestContext>(context => {
     context.pullRequests = pullRequestContextFixture.pullRequests;
-    context.invalid = pullRequestContextFixture.invalid;
   });
 
   it<IPullRequestTestContext>('can be instantiated', context =>
