@@ -1,11 +1,20 @@
-import { setFailed } from '@actions/core';
-import run from '@probot/adapter-github-actions';
+import { getInput, setFailed } from '@actions/core';
 
-import app from './app';
+import action from './action';
+import { getOctokit } from './octokit';
+
+const octokit = getOctokit(getInput('token', { required: true }));
 
 try {
-  await run.run(app);
+  await action(octokit);
 } catch (error) {
-  if (error instanceof Error) setFailed(error.message);
-  if (typeof error === 'string') setFailed(error);
+  let message: string;
+
+  if (error instanceof Error) {
+    message = error.message;
+  } else {
+    message = JSON.stringify(error);
+  }
+
+  setFailed(message);
 }

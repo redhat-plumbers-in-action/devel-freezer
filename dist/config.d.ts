@@ -1,13 +1,10 @@
-import { Context } from 'probot';
-import { events } from './events';
+import { CustomOctokit } from './octokit';
 import { TConfigObject, TFeedback, TPolicyItem } from './types.d';
 export declare class Config {
     private _policy;
     constructor(config: TConfigObject);
     get policy(): PolicyItem[];
-    static getConfig(context: {
-        [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]): Promise<Config>;
+    static getConfig(octokit: CustomOctokit): Promise<Config>;
     static isConfigEmpty(config: TConfigObject | null | unknown): boolean;
     static validate(instance: Config): Promise<{
         property: string;

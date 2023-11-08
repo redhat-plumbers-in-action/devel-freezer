@@ -1,8 +1,10 @@
 import { warning } from '@actions/core';
+import { context } from '@actions/github';
 import { Metadata } from './metadata';
 export class PullRequest {
-    constructor(id, metadata) {
+    constructor(id, octokit, metadata) {
         this.id = id;
+        this.octokit = octokit;
         this._metadata = metadata;
     }
     get metadata() {
@@ -17,52 +19,44 @@ export class PullRequest {
             false;
         return tagPolicy.some(regex => new RegExp(regex).test(freezingTag));
     }
-    async freeze(content, freezingTag, context) {
-        const id = await this.publishComment(content, context);
+    async freeze(content, freezingTag) {
+        const id = await this.publishComment(content);
         this.metadata.commentID = id === undefined ? id : id.toString();
         this.metadata.tag = freezingTag;
-        await this.metadata.setMetadata(context);
+        await this.metadata.setMetadata();
     }
-    async unfreeze(content, context) {
-        const id = await this.publishComment(content, context);
+    async unfreeze(content) {
+        const id = await this.publishComment(content);
         this.metadata.commentID = id === undefined ? id : id.toString();
-        await this.metadata.setMetadata(context);
+        await this.metadata.setMetadata();
     }
-    async publishComment(content, context) {
+    async publishComment(content) {
         var _a;
         if (this.metadata.commentID) {
-            this.updateComment(content, context);
+            this.updateComment(content);
             return;
         }
-        const commentPayload = (_a = (await this.createComment(content, context))) === null || _a === void 0 ? void 0 : _a.data;
+        const commentPayload = (_a = (await this.createComment(content))) === null || _a === void 0 ? void 0 : _a.data;
         if (!commentPayload) {
             warning(`Failed to create comment.`);
             return;
         }
         return commentPayload.id;
     }
-    async createComment(body, context) {
+    async createComment(body) {
         if (!body || body === '')
             return;
-        return context.octokit.issues.createComment(
-        // !FIXME: This is wrong, don't use `as`
-        context.issue({
-            issue_number: this.id,
-            body,
-        }));
+        const { data } = await this.octokit.request('POST /repos/{owner}/{repo}/issues/comments', Object.assign(Object.assign({}, context.repo), { issue_number: this.id, body }));
+        return data;
     }
-    async updateComment(body, context) {
+    async updateComment(body) {
         if (!this.metadata.commentID)
             return;
-        return context.octokit.issues.updateComment(
-        // !FIXME: This is wrong, don't use `as`
-        context.issue({
-            comment_id: +this.metadata.commentID,
-            body,
-        }));
+        const { data } = await this.octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', Object.assign(Object.assign({}, context.repo), { comment_id: +this.metadata.commentID, body }));
+        return data;
     }
-    static async getPullRequest(id, context) {
-        return new PullRequest(id, await Metadata.getMetadata(id, context));
+    static async getPullRequest(id, octokit) {
+        return new PullRequest(id, octokit, await Metadata.getMetadata(id));
     }
 }
 //# sourceMappingURL=pull-request.js.map

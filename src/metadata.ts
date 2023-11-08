@@ -1,19 +1,21 @@
-import { Context } from 'probot';
+import { getInput } from '@actions/core';
+import { context } from '@actions/github';
+import MetadataController from 'issue-metadata';
+import { z } from 'zod';
 
-import { events } from './events';
-
-interface IMetadataObject {
+type MetadataObject = {
   tag: string | undefined;
   commentID: string | undefined;
-}
+};
 
 export class Metadata {
-  private _tag: IMetadataObject['tag'];
-  private _commentID: IMetadataObject['commentID'];
+  private _tag: MetadataObject['tag'];
+  private _commentID: MetadataObject['commentID'];
 
   constructor(
     readonly issueNumber: number,
-    metadata: IMetadataObject
+    readonly controller: MetadataController,
+    metadata: MetadataObject
   ) {
     this._tag = metadata?.tag ?? undefined;
     this._commentID = metadata?.commentID ?? undefined;
@@ -23,7 +25,7 @@ export class Metadata {
     return this._tag;
   }
 
-  set tag(value: IMetadataObject['tag']) {
+  set tag(value: MetadataObject['tag']) {
     this._tag = value;
   }
 
@@ -31,115 +33,54 @@ export class Metadata {
     return this._commentID;
   }
 
-  set commentID(value: IMetadataObject['commentID']) {
+  set commentID(value: MetadataObject['commentID']) {
     if (this._commentID === undefined) {
       this._commentID = value;
     }
   }
 
-  async setMetadata(
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
+  static readonly metadataFreezingTag = 'freezing-tag';
+  static readonly metadataCommentID = 'comment-id';
+
+  async setMetadata() {
     if (this.commentID !== undefined) {
-      await MetadataController.setMetadata(
+      await this.controller.setMetadata(
+        this.issueNumber,
         Metadata.metadataCommentID,
-        this.commentID ?? '',
-        context as unknown as Context,
-        this.issueNumber
+        this.commentID ?? ''
       );
     }
 
     // TODO: clear tag when un-freezed
-    await MetadataController.setMetadata(
+    await this.controller.setMetadata(
+      this.issueNumber,
       Metadata.metadataFreezingTag,
-      this.tag ?? '',
-      context as unknown as Context,
-      this.issueNumber
+      this.tag ?? ''
     );
   }
 
-  static readonly metadataFreezingTag = 'freezing-tag';
-  static readonly metadataCommentID = 'comment-id';
-
-  static async getMetadata(
-    issueNumber: number,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
-    return new Metadata(issueNumber, {
-      tag: await (MetadataController.getMetadata(
-        issueNumber,
-        Metadata.metadataFreezingTag.toString(),
-        context as unknown as Context
-      ) as Promise<IMetadataObject['tag']>),
-      commentID: await (MetadataController.getMetadata(
-        issueNumber,
-        Metadata.metadataCommentID.toString(),
-        context as unknown as Context
-      ) as Promise<IMetadataObject['commentID']>),
-    });
-  }
-}
-
-/**
- * Based on probot-metadata - https://github.com/probot/metadata
- */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
-export class MetadataController {
-  static readonly regex = /\n\n<!-- devel-freezer = (.*) -->/;
-
-  static async getMetadata(issueNumber: number, key: string, context: Context) {
-    const body =
-      (
-        await context.octokit.issues.get(
-          context.issue({ issue_number: issueNumber })
-        )
-      ).data.body || '';
-
-    const match = body.match(MetadataController.regex);
-
-    if (match) {
-      const data = JSON.parse(match[1]);
-      return key ? data && data[key] : data;
-    }
-  }
-
-  static async setMetadata(
-    key: string,
-    value: string,
-    context: Context,
-    issueNumber?: number
-  ) {
-    let body =
-      (
-        await context.octokit.issues.get(
-          context.issue(issueNumber ? { issue_number: issueNumber } : {})
-        )
-      ).data.body || '';
-
-    let data = {};
-
-    body = body.replace(MetadataController.regex, (_, json) => {
-      data = JSON.parse(json);
-      return '';
+  static async getMetadata(issueNumber: number) {
+    const controller = new MetadataController('devel-freezer', {
+      ...context.repo,
+      headers: {
+        authorization: `Bearer ${getInput('token', { required: true })}`,
+      },
     });
 
-    if (!data) data = {};
+    const parsedTag = z
+      .string()
+      .safeParse(
+        await controller.getMetadata(issueNumber, Metadata.metadataFreezingTag)
+      );
+    const parsedCommentID = z
+      .string()
+      .safeParse(
+        await controller.getMetadata(issueNumber, Metadata.metadataCommentID)
+      );
 
-    if (typeof key === 'object') {
-      Object.assign(data, key);
-    } else {
-      (data as { [key: string]: string })[key] = value;
-    }
-
-    return context.octokit.issues.update(
-      context.issue({
-        body: `${body}\n\n<!-- devel-freezer = ${JSON.stringify(data)} -->`,
-        ...(issueNumber ? { issue_number: issueNumber } : {}),
-      })
-    );
+    return new Metadata(issueNumber, controller, {
+      tag: parsedTag.success ? parsedTag.data : undefined,
+      commentID: parsedCommentID.success ? parsedCommentID.data : undefined,
+    });
   }
 }

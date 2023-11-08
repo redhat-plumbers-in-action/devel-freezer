@@ -1,3 +1,4 @@
+import MetadataController from 'issue-metadata';
 import { describe, it, expect, beforeEach, test } from 'vitest';
 
 import {
@@ -6,6 +7,7 @@ import {
 } from './fixtures/pull-request.fixture';
 
 import { Metadata } from '../../src/metadata';
+import { CustomOctokit } from '../../src/octokit';
 import { PullRequest } from '../../src/pull-request';
 
 describe('Pull Request Object', () => {
@@ -41,7 +43,11 @@ describe('Pull Request Object', () => {
 
     const test_pr = new PullRequest(
       0,
-      new Metadata(0, { tag: undefined, commentID: undefined })
+      {} as CustomOctokit,
+      new Metadata(0, {} as MetadataController, {
+        tag: undefined,
+        commentID: undefined,
+      })
     );
 
     // policy with list of tags

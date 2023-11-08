@@ -1,14 +1,15 @@
 import { warning } from '@actions/core';
-import { Context } from 'probot';
+import { context } from '@actions/github';
 
-import { events } from './events';
 import { Metadata } from './metadata';
+import { CustomOctokit } from './octokit';
 
 export class PullRequest {
   private _metadata: Metadata;
 
   constructor(
     readonly id: number,
+    readonly octokit: CustomOctokit,
     metadata: Metadata
   ) {
     this._metadata = metadata;
@@ -31,44 +32,28 @@ export class PullRequest {
     );
   }
 
-  async freeze(
-    content: string,
-    freezingTag: string,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
-    const id = await this.publishComment(content, context);
+  async freeze(content: string, freezingTag: string) {
+    const id = await this.publishComment(content);
 
     this.metadata.commentID = id === undefined ? id : id.toString();
     this.metadata.tag = freezingTag;
-    await this.metadata.setMetadata(context);
+    await this.metadata.setMetadata();
   }
 
-  async unfreeze(
-    content: string,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
-    const id = await this.publishComment(content, context);
+  async unfreeze(content: string) {
+    const id = await this.publishComment(content);
 
     this.metadata.commentID = id === undefined ? id : id.toString();
-    await this.metadata.setMetadata(context);
+    await this.metadata.setMetadata();
   }
 
-  private async publishComment(
-    content: string,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
+  async publishComment(content: string) {
     if (this.metadata.commentID) {
-      this.updateComment(content, context);
+      this.updateComment(content);
       return;
     }
 
-    const commentPayload = (await this.createComment(content, context))?.data;
+    const commentPayload = (await this.createComment(content))?.data;
 
     if (!commentPayload) {
       warning(`Failed to create comment.`);
@@ -78,46 +63,37 @@ export class PullRequest {
     return commentPayload.id;
   }
 
-  private async createComment(
-    body: string,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
+  async createComment(body: string) {
     if (!body || body === '') return;
 
-    return context.octokit.issues.createComment(
-      // !FIXME: This is wrong, don't use `as`
-      (context as Context<(typeof events.pull_request)[number]>).issue({
+    const { data } = await this.octokit.request(
+      'POST /repos/{owner}/{repo}/issues/comments',
+      {
+        ...context.repo,
         issue_number: this.id,
         body,
-      })
+      }
     );
+
+    return data;
   }
 
-  private async updateComment(
-    body: string,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
+  private async updateComment(body: string) {
     if (!this.metadata.commentID) return;
 
-    return context.octokit.issues.updateComment(
-      // !FIXME: This is wrong, don't use `as`
-      (context as Context<(typeof events.pull_request)[number]>).issue({
+    const { data } = await this.octokit.request(
+      'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
+      {
+        ...context.repo,
         comment_id: +this.metadata.commentID,
         body,
-      })
+      }
     );
+
+    return data;
   }
 
-  static async getPullRequest(
-    id: number,
-    context: {
-      [K in keyof typeof events]: Context<(typeof events)[K][number]>;
-    }[keyof typeof events]
-  ) {
-    return new PullRequest(id, await Metadata.getMetadata(id, context));
+  static async getPullRequest(id: number, octokit: CustomOctokit) {
+    return new PullRequest(id, octokit, await Metadata.getMetadata(id));
   }
 }
