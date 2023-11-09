@@ -16,7 +16,7 @@ export class Tag {
     return this._latest;
   }
 
-  isFreezed(tagPolicy: string[]) {
+  isFreezed(tagPolicy: string[]): boolean {
     if (this.latest === undefined) false;
 
     return tagPolicy.some(regex =>
@@ -24,7 +24,7 @@ export class Tag {
     );
   }
 
-  static async getLatestTag() {
+  static async getLatestTag(): Promise<string | undefined> {
     // Get latest tag sorted by date, currently impossible by using GitHub REST API
     const { stdout, stderr } = await promiseExec(
       // Get rid of new lines - it causes issues when regex is to explicit (including `$`)

@@ -5,7 +5,7 @@ const CustomOctokit = Octokit.plugin(config);
 
 export type CustomOctokit = InstanceType<typeof CustomOctokit>;
 
-export function getOctokit(token: string) {
+export function getOctokit(token: string): CustomOctokit {
   return new CustomOctokit({
     auth: token,
   });

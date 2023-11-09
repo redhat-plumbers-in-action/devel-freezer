@@ -35,7 +35,7 @@ export class Config {
     return new this(retrievedConfig);
   }
 
-  static isConfigEmpty(config: unknown) {
+  static isConfigEmpty(config: unknown): boolean {
     return config === null || config === undefined;
   }
 }
