@@ -1,5 +1,7 @@
 import { getInput, setFailed } from '@actions/core';
 
+import '@total-typescript/ts-reset';
+
 import action from './action';
 import { getOctokit } from './octokit';
 
