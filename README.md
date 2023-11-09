@@ -117,7 +117,6 @@ jobs:
     runs-on: ubuntu-latest
     
     permissions:
-      issues: write
       pull-requests: write
 
     steps:
@@ -202,7 +201,7 @@ Action currently accepts the following options:
   with:
     pr-number:    <number>
     config-path:  <path to config file>
-    token:        <GitHub token>
+    token:        <GitHub token or PAT>
 
 # ...
 ```
@@ -223,7 +222,14 @@ Path to configuration file. Configuration file format is described in: [Policy s
 
 ### token
 
-Token used to create comments. Minimal required permissions are `contents: read` and `pull-requests: write`
+GitHub token or PAT is used for creating comments on Pull Request.
+
+```yml
+# required permission
+permissions:
+  contents: read
+  pull-requests: write
+```
 
 * default value: `undefined`
 * requirements: `required`
