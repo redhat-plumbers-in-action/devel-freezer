@@ -5,7 +5,7 @@ import { CustomOctokit } from './octokit';
 import { PullRequest } from './pull-request';
 import { Tag } from './tag';
 
-async function action(octokit: CustomOctokit) /*: Promise<string>*/ {
+async function action(octokit: CustomOctokit): Promise<void> {
   const config = await Config.getConfig(octokit);
 
   const tag = new Tag(await Tag.getLatestTag());

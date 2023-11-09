@@ -42,7 +42,7 @@ export class Metadata {
   static readonly metadataFreezingTag = 'freezing-tag';
   static readonly metadataCommentID = 'comment-id';
 
-  async setMetadata() {
+  async setMetadata(): Promise<void> {
     if (this.commentID !== undefined) {
       await this.controller.setMetadata(
         this.issueNumber,
@@ -59,7 +59,7 @@ export class Metadata {
     );
   }
 
-  static async getMetadata(issueNumber: number) {
+  static async getMetadata(issueNumber: number): Promise<Metadata> {
     const controller = new MetadataController('devel-freezer', {
       ...context.repo,
       headers: {

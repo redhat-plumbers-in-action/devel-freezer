@@ -19,11 +19,11 @@ export class PullRequest {
     return this._metadata;
   }
 
-  isFreezed() {
+  isFreezed(): boolean {
     return !!this.metadata.commentID && !!this.metadata.tag;
   }
 
-  isTagPolicyCompliant(tagPolicy: string[], tag?: string) {
+  isTagPolicyCompliant(tagPolicy: string[], tag?: string): boolean {
     debug(`Checking tag policy for PR: #${this.id}`);
     const freezingTag = tag ?? this.metadata.tag;
     if (freezingTag === undefined) false;
@@ -33,7 +33,7 @@ export class PullRequest {
     );
   }
 
-  async freeze(content: string, freezingTag: string) {
+  async freeze(content: string, freezingTag: string): Promise<void> {
     debug(`Freezing PR: #${this.id}`);
     const id = await this.publishComment(content);
 
@@ -42,7 +42,7 @@ export class PullRequest {
     await this.metadata.setMetadata();
   }
 
-  async unfreeze(content: string) {
+  async unfreeze(content: string): Promise<void> {
     debug(`Unfreezing PR: #${this.id}`);
     const id = await this.publishComment(content);
 
@@ -50,7 +50,7 @@ export class PullRequest {
     await this.metadata.setMetadata();
   }
 
-  async publishComment(content: string) {
+  async publishComment(content: string): Promise<number | undefined> {
     if (this.metadata.commentID) {
       this.updateComment(content);
       return;
@@ -100,7 +100,10 @@ export class PullRequest {
     return data;
   }
 
-  static async getPullRequest(id: number, octokit: CustomOctokit) {
+  static async getPullRequest(
+    id: number,
+    octokit: CustomOctokit
+  ): Promise<PullRequest> {
     return new PullRequest(id, octokit, await Metadata.getMetadata(id));
   }
 }
