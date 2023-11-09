@@ -200,8 +200,9 @@ Action currently accepts the following options:
 
 - uses: redhat-plumbers-in-action/devel-freezer@v1
   with:
-    pr-number: <number>
-    token: <GitHub token>
+    pr-number:    <number>
+    config-path:  <path to config file>
+    token:        <GitHub token>
 
 # ...
 ```
@@ -212,6 +213,13 @@ Pull Request number.
 
 * default value: `${{ github.event.number }}`
 * requirements: `required`
+
+### config-path
+
+Path to configuration file. Configuration file format is described in: [Policy section](#policy).
+
+* default value: `.github/development-freeze.yml`
+* requirements: `optional`
 
 ### token
 
