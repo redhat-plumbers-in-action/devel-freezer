@@ -50,8 +50,9 @@ To setup Development freeze, we need three files:
 * Workflow that runs on `workflow-run` trigger, downloads artifact and runs `devel_freezer` GitHub Action
 * `development-freeze` configuration
 
-<!-- markdownlint-disable MD013 -->
-> **Note**: Setup is complicated due to GitHub [permissions on `GITHUB_TOKEN`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token). When used in workflow executed from fork it has `read-only` permissions. By using `workflow-run` trigger we are able to [safely overcome this limitation](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) and it allow us to comment on Pull Requests.
+> **Note**
+>
+> Setup is complicated due to GitHub [permissions on `GITHUB_TOKEN`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token). When used in workflow executed from fork it has `read-only` permissions. By using `workflow-run` trigger we are able to [safely overcome this limitation](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) and it allow us to comment on Pull Requests.
 
 ```yml
 name: Gather Pull Request Metadata
@@ -160,7 +161,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-> **Note**: `fetch-depth: 0` is required in order to have access to full history including tags.
+> **Note**
+>
+> `fetch-depth: 0` is required in order to have access to full history including tags.
 
 ```yml
 policy:
