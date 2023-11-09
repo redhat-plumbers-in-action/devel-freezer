@@ -8,13 +8,10 @@ import {
 describe('Metadata Object', () => {
   beforeEach<IMetadataTestContext>(context => {
     context.metadata = metadataContextFixture.metadata;
-    context.invalid = metadataContextFixture.invalid;
   });
 
   it<IMetadataTestContext>('can be instantiated', context =>
     context.metadata.map(metadataItem => expect(metadataItem).toBeDefined()));
-
-  it.todo<IMetadataTestContext>('is invalid');
 
   test<IMetadataTestContext>('get tag()', context =>
     context.metadata.map(metadataItem =>

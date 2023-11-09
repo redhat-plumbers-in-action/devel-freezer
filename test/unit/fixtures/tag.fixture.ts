@@ -3,7 +3,6 @@ import { Tag } from '../../../src/tag';
 export interface ITagTestContext {
   tags: Tag[];
   tagPolicy: string[][];
-  invalid: Tag[];
 }
 
 export const tagContextFixture: ITagTestContext = {
@@ -19,17 +18,4 @@ export const tagContextFixture: ITagTestContext = {
   ],
 
   tagPolicy: [['^S*-rcd$'], ['alpha', 'beta'], ['latest']],
-
-  invalid: [
-    // @ts-expect-error: Let's ignore a type error, it's required for testing
-    new Tag(),
-    // @ts-expect-error: Let's ignore a type error, it's required for testing
-    new Tag(null),
-    new Tag(undefined),
-    new Tag(''),
-    // @ts-expect-error: Let's ignore a type error, it's required for testing
-    new Tag({}),
-    // @ts-expect-error: Let's ignore a type error, it's required for testing
-    new Tag([]),
-  ],
 };
