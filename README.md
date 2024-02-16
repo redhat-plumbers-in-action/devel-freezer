@@ -56,14 +56,10 @@ To setup Development freeze, we need three files:
 
 ```yml
 name: Gather Pull Request Metadata
-
 on:
   pull_request:
     branches: [ main ]
-
-env:
-  PULL_REQUEST_METADATA_DIR: pull_request
-  PULL_REQUEST_METADATA_FILE: metadata
+    types: [ opened, reopened, synchronize ]
 
 permissions:
   contents: read
@@ -72,22 +68,24 @@ jobs:
   gather-metadata:
     runs-on: ubuntu-latest
 
+    permissions:
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
     steps:
       - name: Repository checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
-      - name: Store PR number in file
-        run: |
-          mkdir -p ./${{ env.PULL_REQUEST_METADATA_DIR }}
-          echo ${{ github.event.number }} > ./${{ env.PULL_REQUEST_METADATA_DIR }}/${{ env.PULL_REQUEST_METADATA_FILE }}
+      - id: Metadata
+        name: Gather Pull Request Metadata
+        uses: redhat-plumbers-in-action/gather-pull-request-metadata@v1
 
       - name: Upload Pull Request Metadata artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.PULL_REQUEST_METADATA_FILE }}
-          path: ${{ env.PULL_REQUEST_METADATA_DIR }}
+          name: Pull Request Metadata
+          path: ${{ steps.Metadata.outputs.metadata-file }}
           retention-days: 1
 ```
 
@@ -100,10 +98,6 @@ on:
     types:
       - completed
 
-env:
-  PULL_REQUEST_METADATA_DIR: pull_request
-  PULL_REQUEST_METADATA_FILE: metadata
-
 permissions:
   contents: read
 
@@ -113,51 +107,27 @@ jobs:
       github.event.workflow_run.event == 'pull_request' &&
       github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    
+
     permissions:
+      # Needed for commenting on Pull Requests
       pull-requests: write
 
     steps:
-      - name: Download Pull Request Metadata artifact
-        uses: actions/github-script@v6
+      - id: Artifact
+        name: Download Pull Request Metadata artifact
+        uses: redhat-plumbers-in-action/download-artifact@v1
         with:
-          script: |
-            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{ github.event.workflow_run.id }},
-            });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "${{ env.PULL_REQUEST_METADATA_FILE }}"
-            })[0];
-            var download = await github.rest.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            const fs = require('fs');
-            fs.writeFileSync('${{ github.workspace }}/${{ env.PULL_REQUEST_METADATA_FILE }}.zip', Buffer.from(download.data));
-      - run: unzip ${{ env.PULL_REQUEST_METADATA_FILE }}.zip
-
-      - name: 'Get Pull Request number'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const pr_number = Number(fs.readFileSync('./${{ env.PULL_REQUEST_METADATA_FILE }}'));
-            core.exportVariable('pr_number', pr_number);
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: Pull Request Metadata
 
       - name: Repository checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Development Freezer
         uses: redhat-plumbers-in-action/devel-freezer@v1
         with:
-          pr-number: ${{ env.pr_number }}
+          pr-number: ${{ fromJSON(steps.Artifact.outputs.pr-metadata-json).number }}
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
