@@ -3,6 +3,7 @@ import { context } from '@actions/github';
 import { Metadata } from './metadata';
 import { pullRequestDataSchema } from './schema/pull-request';
 import { raise } from './error';
+import { Milestone } from './milestone';
 export class PullRequest {
     constructor(id, octokit) {
         this.id = id;
@@ -24,9 +25,10 @@ export class PullRequest {
         await this.setMetadata();
     }
     async setPullRequestData() {
-        const prData = pullRequestDataSchema.parse(await this.octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', Object.assign(Object.assign({}, context.repo), { pull_number: this.id })));
+        const prDataUnsafe = (await this.octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', Object.assign(Object.assign({}, context.repo), { pull_number: this.id }))).data;
+        const prData = pullRequestDataSchema.parse(prDataUnsafe);
         this.labels = prData.labels.map(label => label.name);
-        this.milestone = prData.milestone ? prData.milestone.title : null;
+        this.milestone = prData.milestone ? new Milestone(prData.milestone) : null;
     }
     async setMetadata() {
         this.metadata = await Metadata.getMetadata(this.id);

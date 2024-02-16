@@ -1,4 +1,4 @@
-import { debug, warning, getInput } from '@actions/core';
+import { debug, warning, getInput, info } from '@actions/core';
 import { Config } from './config';
 import { Tag } from './tag';
 import { delay } from './delay';
@@ -16,20 +16,25 @@ async function action(pr, octokit) {
         return;
     }
     debug(`Latest tag is: '${tag.latest}'`);
-    // TODO:
-    // * check milestone of the PR
-    // * check if milestone is matching the tag??? or if it has expected format???
-    // * add option to add delay to the freeze/unfreeze action to account for the time to add milestone/labels to the PR
+    // Loop through the policy items and check if the latest tag is freezing (matches the policy)
     for (const policyItem of config.policy) {
         if (!tag.isFreezed(policyItem.tags)) {
             continue;
         }
+        // check if milestone is set and matches the pre-release tag ~ PR is planned to get merged before the next release
+        if (pr.milestone !== null && pr.milestone.isCompliant(tag.latest)) {
+            info(`PR is marked with a milestone that matches the latest pre-release tag.`);
+            continue;
+        }
+        // Mark PR as frozen when all conditions are met
         await pr.freeze(policyItem.feedback['frozen-state'], tag.latest);
         return;
     }
+    // When PR is not frozen, return early
     if (!pr.isFreezed()) {
         return;
     }
+    // Loop through the policy items and unfreeze PR when conditions are no longer met
     for (const policyItem of config.policy) {
         if (!pr.isTagPolicyCompliant(policyItem.tags)) {
             continue;

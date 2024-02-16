@@ -1,485 +1,6 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6073:
-/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-
-// EXPORTS
-__nccwpck_require__.d(__webpack_exports__, {
-  "Z": () => (/* binding */ dist_action)
-});
-
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5438);
-// EXTERNAL MODULE: ./node_modules/zod/lib/index.mjs
-var lib = __nccwpck_require__(2300);
-;// CONCATENATED MODULE: ./dist/schema/config.js
-
-const policySchema = lib.z.object({
-    tags: lib.z.array(lib.z.string().min(1)),
-    feedback: lib.z.object({
-        'frozen-state': lib.z.string().min(1),
-        'unfreeze-state': lib.z.string().min(1),
-    }),
-});
-const configSchema = lib.z.object({
-    policy: lib.z.array(policySchema).min(1),
-});
-//# sourceMappingURL=config.js.map
-;// CONCATENATED MODULE: ./dist/config.js
-
-
-
-class Config {
-    constructor(config) {
-        this.policy = [];
-        const parsedConfig = configSchema.parse(config);
-        this.policy = parsedConfig.policy;
-    }
-    static async getConfig(octokit) {
-        const path = (0,core.getInput)('config-path', { required: true });
-        const retrievedConfig = (await octokit.config.get(Object.assign(Object.assign({}, github.context.repo), { path }))).config;
-        (0,core.debug)(`Configuration '${path}': ${JSON.stringify(retrievedConfig)}`);
-        if (Config.isConfigEmpty(retrievedConfig)) {
-            throw new Error(`Missing configuration. Please setup 'devel-freezer' Action using '${(0,core.getInput)('config-path')}' file.`);
-        }
-        return new this(retrievedConfig);
-    }
-    static isConfigEmpty(config) {
-        return config === null || config === undefined;
-    }
-}
-//# sourceMappingURL=config.js.map
-;// CONCATENATED MODULE: external "node:child_process"
-const external_node_child_process_namespaceObject = require("node:child_process");
-// EXTERNAL MODULE: external "node:util"
-var external_node_util_ = __nccwpck_require__(7261);
-;// CONCATENATED MODULE: ./dist/tag.js
-
-
-
-const promiseExec = (0,external_node_util_.promisify)(external_node_child_process_namespaceObject.exec);
-class Tag {
-    constructor(tag) {
-        this._latest = tag;
-    }
-    get latest() {
-        return this._latest;
-    }
-    isFreezed(tagPolicy) {
-        if (this.latest === undefined)
-            false;
-        return tagPolicy.some(regex => new RegExp(regex).test(this.latest));
-    }
-    static async getLatestTag() {
-        // Get latest tag sorted by date, currently impossible by using GitHub REST API
-        const { stdout, stderr } = await promiseExec(
-        // Get rid of new lines - it causes issues when regex is to explicit (including `$`)
-        `git describe --tags --abbrev=0 | tr -d '\n'`);
-        const tag = stdout;
-        if (stderr) {
-            (0,core.warning)(`Unable to get latest tag - stderr: ${stderr}`);
-        }
-        return !tag || tag.length <= 0 ? undefined : tag;
-    }
-}
-//# sourceMappingURL=tag.js.map
-;// CONCATENATED MODULE: external "timers/promises"
-const promises_namespaceObject = require("timers/promises");
-;// CONCATENATED MODULE: ./dist/delay.js
-
-
-async function delay(seconds) {
-    (0,core.warning)(`Delaying the action for ${seconds} seconds.`);
-    await (0,promises_namespaceObject.setTimeout)(seconds * 1000);
-    (0,core.debug)('Delay is over.');
-}
-//# sourceMappingURL=delay.js.map
-// EXTERNAL MODULE: ./dist/schema/inputs.js
-var inputs = __nccwpck_require__(4367);
-;// CONCATENATED MODULE: ./dist/action.js
-
-
-
-
-
-async function action(pr, octokit) {
-    const delayParsed = inputs/* inputDelaySchema.safeParse */.W.safeParse((0,core.getInput)('delay'));
-    const delaySeconds = delayParsed.success ? delayParsed.data : 0;
-    if (delaySeconds > 0) {
-        await delay(delaySeconds);
-    }
-    const config = await Config.getConfig(octokit);
-    const tag = new Tag(await Tag.getLatestTag());
-    if (!tag.latest) {
-        (0,core.warning)(`Repository doesn't have any tags or releases published.`);
-        return;
-    }
-    (0,core.debug)(`Latest tag is: '${tag.latest}'`);
-    // TODO:
-    // * check milestone of the PR
-    // * check if milestone is matching the tag??? or if it has expected format???
-    // * add option to add delay to the freeze/unfreeze action to account for the time to add milestone/labels to the PR
-    for (const policyItem of config.policy) {
-        if (!tag.isFreezed(policyItem.tags)) {
-            continue;
-        }
-        await pr.freeze(policyItem.feedback['frozen-state'], tag.latest);
-        return;
-    }
-    if (!pr.isFreezed()) {
-        return;
-    }
-    for (const policyItem of config.policy) {
-        if (!pr.isTagPolicyCompliant(policyItem.tags)) {
-            continue;
-        }
-        await pr.unfreeze(policyItem.feedback['unfreeze-state']);
-        return;
-    }
-    (0,core.debug)(`The latest tag doesn't match the requirements for a development freeze.`);
-}
-/* harmony default export */ const dist_action = (action);
-//# sourceMappingURL=action.js.map
-
-/***/ }),
-
-/***/ 9496:
-/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-__nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _action__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(6073);
-/* harmony import */ var _octokit__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(72);
-/* harmony import */ var _pull_request__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(4361);
-/* harmony import */ var _schema_inputs__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(4367);
-
-
-
-
-
-
-const octokit = (0,_octokit__WEBPACK_IMPORTED_MODULE_2__/* .getOctokit */ .P)((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('token', { required: true }));
-const prMetadataUnsafe = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('pr-number', { required: true });
-const prMetadata = _schema_inputs__WEBPACK_IMPORTED_MODULE_4__/* .inputPrNumberSchema.parse */ .r.parse(prMetadataUnsafe);
-try {
-    const pr = new _pull_request__WEBPACK_IMPORTED_MODULE_3__/* .PullRequest */ .i(prMetadata, octokit);
-    await pr.initialize();
-    await (0,_action__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(pr, octokit);
-}
-catch (error) {
-    let message;
-    if (error instanceof Error) {
-        message = error.message;
-    }
-    else {
-        message = JSON.stringify(error);
-    }
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(message);
-}
-//# sourceMappingURL=main.js.map
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } }, 1);
-
-/***/ }),
-
-/***/ 72:
-/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   "P": () => (/* binding */ getOctokit)
-/* harmony export */ });
-/* unused harmony export CustomOctokit */
-/* harmony import */ var _octokit_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(6762);
-/* harmony import */ var _octokit_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_octokit_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9326);
-/* harmony import */ var _probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1__);
-
-
-const CustomOctokit = _octokit_core__WEBPACK_IMPORTED_MODULE_0__.Octokit.plugin(_probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1__.config);
-function getOctokit(token) {
-    return new CustomOctokit({
-        auth: token,
-    });
-}
-//# sourceMappingURL=octokit.js.map
-
-/***/ }),
-
-/***/ 4361:
-/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-
-// EXPORTS
-__nccwpck_require__.d(__webpack_exports__, {
-  "i": () => (/* binding */ PullRequest)
-});
-
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5438);
-// EXTERNAL MODULE: ./node_modules/issue-metadata/node_modules/@octokit/request/dist-node/index.js
-var dist_node = __nccwpck_require__(3425);
-// EXTERNAL MODULE: ./node_modules/zod/lib/index.mjs
-var lib = __nccwpck_require__(2300);
-;// CONCATENATED MODULE: ./node_modules/issue-metadata/dist/schema.js
-
-const idSchema = lib.z.string().min(1);
-const metadataSchema = lib.z.object({
-    template: lib.z.object({
-        before: lib.z.string(),
-        after: lib.z.string(),
-    }),
-    id: lib.z.string(),
-});
-const requestDetailsSchema = lib.z.object({
-    owner: lib.z.string().min(1),
-    repo: lib.z.string().min(1),
-    headers: lib.z.object({
-        authorization: lib.z.string().min(1),
-    }),
-}, {
-    required_error: `Required settings wasn't provided: {owner: string, repo: string}`,
-});
-//# sourceMappingURL=schema.js.map
-;// CONCATENATED MODULE: ./node_modules/issue-metadata/dist/index.js
-
-
-class MetadataController {
-    constructor(uniqueID, settings) {
-        const verifiedID = idSchema.parse(uniqueID);
-        this.requestDefaults = requestDetailsSchema.parse(settings);
-        this.schema = {
-            id: verifiedID,
-            template: {
-                before: '<!-- ',
-                after: ' -->',
-            },
-        };
-        this.regexp = new RegExp(`^${this.schema.template.before}${verifiedID} = (.*)${this.schema.template.after}$`, 'm');
-    }
-    async getMetadata(issue, key) {
-        const body = (await (0,dist_node.request)('GET /repos/{owner}/{repo}/issues/{issue_number}', Object.assign(Object.assign({}, this.requestDefaults), { issue_number: issue }))).data.body || '';
-        const match = body.match(this.regexp);
-        if (match) {
-            const data = JSON.parse(match[1]);
-            return key ? data && data[key] : data;
-        }
-    }
-    async setMetadata(issue, key, value) {
-        let body = (await (0,dist_node.request)('GET /repos/{owner}/{repo}/issues/{issue_number}', Object.assign(Object.assign({}, this.requestDefaults), { issue_number: issue }))).data.body || '';
-        let data = {};
-        body = body.replace(this.regexp, (_, json) => {
-            data = JSON.parse(json);
-            return '';
-        });
-        if (!data)
-            data = {};
-        if (typeof key === 'object') {
-            Object.assign(data, key);
-        }
-        else {
-            data[key] = value ? value : '';
-        }
-        await (0,dist_node.request)('PATCH /repos/{owner}/{repo}/issues/{issue_number}', Object.assign(Object.assign({}, this.requestDefaults), { issue_number: issue, body: `${body}\n\n${this.schema.template.before}${this.schema.id} = ${JSON.stringify(data)}${this.schema.template.after}` }));
-        return data;
-    }
-}
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ./dist/metadata.js
-
-
-
-
-class Metadata {
-    constructor(issueNumber, controller, metadata) {
-        var _a, _b;
-        this.issueNumber = issueNumber;
-        this.controller = controller;
-        this._tag = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.tag) !== null && _a !== void 0 ? _a : undefined;
-        this._commentID = (_b = metadata === null || metadata === void 0 ? void 0 : metadata.commentID) !== null && _b !== void 0 ? _b : undefined;
-    }
-    get tag() {
-        return this._tag;
-    }
-    set tag(value) {
-        this._tag = value;
-    }
-    get commentID() {
-        return this._commentID;
-    }
-    set commentID(value) {
-        if (this._commentID === undefined) {
-            this._commentID = value;
-        }
-    }
-    async setMetadata() {
-        var _a, _b;
-        if (this.commentID !== undefined) {
-            await this.controller.setMetadata(this.issueNumber, Metadata.metadataCommentID, (_a = this.commentID) !== null && _a !== void 0 ? _a : '');
-        }
-        // TODO: clear tag when un-freezed
-        await this.controller.setMetadata(this.issueNumber, Metadata.metadataFreezingTag, (_b = this.tag) !== null && _b !== void 0 ? _b : '');
-    }
-    static async getMetadata(issueNumber) {
-        const controller = new MetadataController('devel-freezer', Object.assign(Object.assign({}, github.context.repo), { headers: {
-                authorization: `Bearer ${(0,core.getInput)('token', { required: true })}`,
-            } }));
-        const parsedTag = lib.z.string()
-            .safeParse(await controller.getMetadata(issueNumber, Metadata.metadataFreezingTag));
-        const parsedCommentID = lib.z.string()
-            .safeParse(await controller.getMetadata(issueNumber, Metadata.metadataCommentID));
-        return new Metadata(issueNumber, controller, {
-            tag: parsedTag.success ? parsedTag.data : undefined,
-            commentID: parsedCommentID.success ? parsedCommentID.data : undefined,
-        });
-    }
-}
-Metadata.metadataFreezingTag = 'freezing-tag';
-Metadata.metadataCommentID = 'comment-id';
-//# sourceMappingURL=metadata.js.map
-;// CONCATENATED MODULE: ./dist/schema/pull-request.js
-
-const labelDataSchema = lib.z.object({
-    name: lib.z.string(),
-});
-const milestoneDataSchema = lib.z.object({
-    html_url: lib.z.string(),
-    number: lib.z.number(),
-    title: lib.z.string(),
-    description: lib.z.string(),
-    state: lib.z.string(),
-});
-const pullRequestDataSchema = lib.z.object({
-    labels: lib.z.array(labelDataSchema),
-    milestone: milestoneDataSchema.nullable(),
-});
-//# sourceMappingURL=pull-request.js.map
-;// CONCATENATED MODULE: ./dist/error.js
-class FreezerError extends Error {
-    constructor(message, code) {
-        super(message);
-        this.code = code;
-    }
-}
-function raise(error, code) {
-    throw new FreezerError(error, code);
-}
-//# sourceMappingURL=error.js.map
-;// CONCATENATED MODULE: ./dist/pull-request.js
-
-
-
-
-
-class PullRequest {
-    constructor(id, octokit) {
-        this.id = id;
-        this.octokit = octokit;
-        this.labels = [];
-        this.milestone = null;
-    }
-    set metadata(metadata) {
-        this._metadata = metadata;
-    }
-    get metadata() {
-        if (!this._metadata) {
-            raise('Metadata is not set.');
-        }
-        return this._metadata;
-    }
-    async initialize() {
-        await this.setPullRequestData();
-        await this.setMetadata();
-    }
-    async setPullRequestData() {
-        const prData = pullRequestDataSchema.parse(await this.octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', Object.assign(Object.assign({}, github.context.repo), { pull_number: this.id })));
-        this.labels = prData.labels.map(label => label.name);
-        this.milestone = prData.milestone ? prData.milestone.title : null;
-    }
-    async setMetadata() {
-        this.metadata = await Metadata.getMetadata(this.id);
-    }
-    isFreezed() {
-        return !!this.metadata.commentID && !!this.metadata.tag;
-    }
-    isTagPolicyCompliant(tagPolicy, tag) {
-        (0,core.debug)(`Checking tag policy for PR: #${this.id}`);
-        const freezingTag = tag !== null && tag !== void 0 ? tag : this.metadata.tag;
-        if (freezingTag === undefined)
-            false;
-        return tagPolicy.some(regex => new RegExp(regex).test(freezingTag));
-    }
-    async freeze(content, freezingTag) {
-        (0,core.debug)(`Freezing PR: #${this.id}`);
-        const id = await this.publishComment(content);
-        this.metadata.commentID = id === undefined ? id : id.toString();
-        this.metadata.tag = freezingTag;
-        await this.metadata.setMetadata();
-    }
-    async unfreeze(content) {
-        (0,core.debug)(`Unfreezing PR: #${this.id}`);
-        const id = await this.publishComment(content);
-        this.metadata.commentID = id === undefined ? id : id.toString();
-        await this.metadata.setMetadata();
-    }
-    async publishComment(content) {
-        if (this.metadata.commentID) {
-            this.updateComment(content);
-            return;
-        }
-        const commentPayload = await this.createComment(content);
-        if (!commentPayload) {
-            (0,core.warning)(`Failed to create comment.`);
-            return;
-        }
-        return commentPayload.id;
-    }
-    async createComment(body) {
-        if (!body || body === '')
-            return;
-        (0,core.debug)(`Creating comment for PR: #${this.id}`);
-        const { data } = await this.octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', Object.assign(Object.assign({}, github.context.repo), { issue_number: this.id, body }));
-        return data;
-    }
-    async updateComment(body) {
-        if (!this.metadata.commentID)
-            return;
-        (0,core.debug)(`Updating comment with ID: ${this.metadata.commentID}`);
-        const { data } = await this.octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', Object.assign(Object.assign({}, github.context.repo), { comment_id: +this.metadata.commentID, body }));
-        return data;
-    }
-}
-//# sourceMappingURL=pull-request.js.map
-
-/***/ }),
-
-/***/ 4367:
-/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   "W": () => (/* binding */ inputDelaySchema),
-/* harmony export */   "r": () => (/* binding */ inputPrNumberSchema)
-/* harmony export */ });
-/* harmony import */ var zod__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2300);
-
-const inputPrNumberSchema = zod__WEBPACK_IMPORTED_MODULE_0__.z.coerce.number().int().positive();
-const inputDelaySchema = zod__WEBPACK_IMPORTED_MODULE_0__.z.coerce.number().min(0);
-//# sourceMappingURL=inputs.js.map
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -8327,7 +7848,7 @@ function renamed(from, to) {
 }
 
 
-module.exports.Type = __nccwpck_require__(930);
+module.exports.Type = __nccwpck_require__(6073);
 module.exports.Schema = __nccwpck_require__(1082);
 module.exports.FAILSAFE_SCHEMA = __nccwpck_require__(8562);
 module.exports.JSON_SCHEMA = __nccwpck_require__(1035);
@@ -11210,7 +10731,7 @@ module.exports.load    = load;
 /*eslint-disable max-len*/
 
 var YAMLException = __nccwpck_require__(8179);
-var Type          = __nccwpck_require__(930);
+var Type          = __nccwpck_require__(6073);
 
 
 function compileList(schema, name) {
@@ -11540,7 +11061,7 @@ module.exports = makeSnippet;
 
 /***/ }),
 
-/***/ 930:
+/***/ 6073:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -11623,7 +11144,7 @@ module.exports = Type;
 /*eslint-disable no-bitwise*/
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 
 // [ 64, 65, 66 ] -> [ padding, CR, LF ]
@@ -11753,7 +11274,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 function resolveYamlBoolean(data) {
   if (data === null) return false;
@@ -11797,7 +11318,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
 
 
 var common = __nccwpck_require__(6829);
-var Type   = __nccwpck_require__(930);
+var Type   = __nccwpck_require__(6073);
 
 var YAML_FLOAT_PATTERN = new RegExp(
   // 2.5e4, 2.5 and integers
@@ -11902,7 +11423,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
 
 
 var common = __nccwpck_require__(6829);
-var Type   = __nccwpck_require__(930);
+var Type   = __nccwpck_require__(6073);
 
 function isHexCode(c) {
   return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
@@ -12065,7 +11586,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 module.exports = new Type('tag:yaml.org,2002:map', {
   kind: 'mapping',
@@ -12081,7 +11602,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 function resolveYamlMerge(data) {
   return data === '<<' || data === null;
@@ -12101,7 +11622,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 function resolveYamlNull(data) {
   if (data === null) return true;
@@ -12144,7 +11665,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
@@ -12196,7 +11717,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 var _toString = Object.prototype.toString;
 
@@ -12257,7 +11778,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
@@ -12273,7 +11794,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -12310,7 +11831,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 module.exports = new Type('tag:yaml.org,2002:str', {
   kind: 'scalar',
@@ -12326,7 +11847,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
 "use strict";
 
 
-var Type = __nccwpck_require__(930);
+var Type = __nccwpck_require__(6073);
 
 var YAML_DATE_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -35402,6 +34923,507 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 2883:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "Z": () => (/* binding */ src_action)
+});
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+// EXTERNAL MODULE: ./node_modules/zod/lib/index.mjs
+var lib = __nccwpck_require__(2300);
+;// CONCATENATED MODULE: ./src/schema/config.ts
+
+const policySchema = lib.z.object({
+    tags: lib.z.array(lib.z.string().min(1)),
+    feedback: lib.z.object({
+        'frozen-state': lib.z.string().min(1),
+        'unfreeze-state': lib.z.string().min(1),
+    }),
+});
+const configSchema = lib.z.object({
+    policy: lib.z.array(policySchema).min(1),
+});
+
+;// CONCATENATED MODULE: ./src/config.ts
+
+
+
+class Config {
+    constructor(config) {
+        this.policy = [];
+        const parsedConfig = configSchema.parse(config);
+        this.policy = parsedConfig.policy;
+    }
+    static async getConfig(octokit) {
+        const path = (0,core.getInput)('config-path', { required: true });
+        const retrievedConfig = (await octokit.config.get(Object.assign(Object.assign({}, github.context.repo), { path }))).config;
+        (0,core.debug)(`Configuration '${path}': ${JSON.stringify(retrievedConfig)}`);
+        if (Config.isConfigEmpty(retrievedConfig)) {
+            throw new Error(`Missing configuration. Please setup 'devel-freezer' Action using '${(0,core.getInput)('config-path')}' file.`);
+        }
+        return new this(retrievedConfig);
+    }
+    static isConfigEmpty(config) {
+        return config === null || config === undefined;
+    }
+}
+
+;// CONCATENATED MODULE: external "node:child_process"
+const external_node_child_process_namespaceObject = require("node:child_process");
+// EXTERNAL MODULE: external "node:util"
+var external_node_util_ = __nccwpck_require__(7261);
+;// CONCATENATED MODULE: ./src/tag.ts
+
+
+
+const promiseExec = (0,external_node_util_.promisify)(external_node_child_process_namespaceObject.exec);
+class Tag {
+    constructor(tag) {
+        this._latest = tag;
+    }
+    get latest() {
+        return this._latest;
+    }
+    isFreezed(tagPolicy) {
+        if (this.latest === undefined)
+            false;
+        return tagPolicy.some(regex => new RegExp(regex).test(this.latest));
+    }
+    static async getLatestTag() {
+        // Get latest tag sorted by date, currently impossible by using GitHub REST API
+        const { stdout, stderr } = await promiseExec(
+        // Get rid of new lines - it causes issues when regex is to explicit (including `$`)
+        `git describe --tags --abbrev=0 | tr -d '\n'`);
+        const tag = stdout;
+        if (stderr) {
+            (0,core.warning)(`Unable to get latest tag - stderr: ${stderr}`);
+        }
+        return !tag || tag.length <= 0 ? undefined : tag;
+    }
+}
+
+;// CONCATENATED MODULE: external "timers/promises"
+const promises_namespaceObject = require("timers/promises");
+;// CONCATENATED MODULE: ./src/delay.ts
+
+
+async function delay(seconds) {
+    (0,core.warning)(`Delaying the action for ${seconds} seconds.`);
+    await (0,promises_namespaceObject.setTimeout)(seconds * 1000);
+    (0,core.debug)('Delay is over.');
+}
+
+// EXTERNAL MODULE: ./src/schema/inputs.ts
+var inputs = __nccwpck_require__(437);
+;// CONCATENATED MODULE: ./src/action.ts
+
+
+
+
+
+async function action(pr, octokit) {
+    const delayParsed = inputs/* inputDelaySchema.safeParse */.W.safeParse((0,core.getInput)('delay'));
+    const delaySeconds = delayParsed.success ? delayParsed.data : 0;
+    if (delaySeconds > 0) {
+        await delay(delaySeconds);
+    }
+    const config = await Config.getConfig(octokit);
+    const tag = new Tag(await Tag.getLatestTag());
+    if (!tag.latest) {
+        (0,core.warning)(`Repository doesn't have any tags or releases published.`);
+        return;
+    }
+    (0,core.debug)(`Latest tag is: '${tag.latest}'`);
+    // Loop through the policy items and check if the latest tag is freezing (matches the policy)
+    for (const policyItem of config.policy) {
+        if (!tag.isFreezed(policyItem.tags)) {
+            continue;
+        }
+        // check if milestone is set and matches the pre-release tag ~ PR is planned to get merged before the next release
+        if (pr.milestone !== null && pr.milestone.isCompliant(tag.latest)) {
+            (0,core.info)(`PR is marked with a milestone that matches the latest pre-release tag.`);
+            continue;
+        }
+        // Mark PR as frozen when all conditions are met
+        await pr.freeze(policyItem.feedback['frozen-state'], tag.latest);
+        return;
+    }
+    // When PR is not frozen, return early
+    if (!pr.isFreezed()) {
+        return;
+    }
+    // Loop through the policy items and unfreeze PR when conditions are no longer met
+    for (const policyItem of config.policy) {
+        if (!pr.isTagPolicyCompliant(policyItem.tags)) {
+            continue;
+        }
+        await pr.unfreeze(policyItem.feedback['unfreeze-state']);
+        return;
+    }
+    (0,core.debug)(`The latest tag doesn't match the requirements for a development freeze.`);
+}
+/* harmony default export */ const src_action = (action);
+
+
+/***/ }),
+
+/***/ 399:
+/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _action__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2883);
+/* harmony import */ var _octokit__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(6161);
+/* harmony import */ var _pull_request__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(204);
+/* harmony import */ var _schema_inputs__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(437);
+
+
+
+
+
+
+const octokit = (0,_octokit__WEBPACK_IMPORTED_MODULE_2__/* .getOctokit */ .P)((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('token', { required: true }));
+const prMetadataUnsafe = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('pr-number', { required: true });
+const prMetadata = _schema_inputs__WEBPACK_IMPORTED_MODULE_4__/* .inputPrNumberSchema.parse */ .r.parse(prMetadataUnsafe);
+try {
+    const pr = new _pull_request__WEBPACK_IMPORTED_MODULE_3__/* .PullRequest */ .i(prMetadata, octokit);
+    await pr.initialize();
+    await (0,_action__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(pr, octokit);
+}
+catch (error) {
+    let message;
+    if (error instanceof Error) {
+        message = error.message;
+    }
+    else {
+        message = JSON.stringify(error);
+    }
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(message);
+}
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } }, 1);
+
+/***/ }),
+
+/***/ 6161:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "P": () => (/* binding */ getOctokit)
+/* harmony export */ });
+/* unused harmony export CustomOctokit */
+/* harmony import */ var _octokit_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(6762);
+/* harmony import */ var _octokit_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_octokit_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9326);
+/* harmony import */ var _probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const CustomOctokit = _octokit_core__WEBPACK_IMPORTED_MODULE_0__.Octokit.plugin(_probot_octokit_plugin_config__WEBPACK_IMPORTED_MODULE_1__.config);
+function getOctokit(token) {
+    return new CustomOctokit({
+        auth: token,
+    });
+}
+
+
+/***/ }),
+
+/***/ 204:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "i": () => (/* binding */ PullRequest)
+});
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+// EXTERNAL MODULE: ./node_modules/issue-metadata/node_modules/@octokit/request/dist-node/index.js
+var dist_node = __nccwpck_require__(3425);
+// EXTERNAL MODULE: ./node_modules/zod/lib/index.mjs
+var lib = __nccwpck_require__(2300);
+;// CONCATENATED MODULE: ./node_modules/issue-metadata/dist/schema.js
+
+const idSchema = lib.z.string().min(1);
+const metadataSchema = lib.z.object({
+    template: lib.z.object({
+        before: lib.z.string(),
+        after: lib.z.string(),
+    }),
+    id: lib.z.string(),
+});
+const requestDetailsSchema = lib.z.object({
+    owner: lib.z.string().min(1),
+    repo: lib.z.string().min(1),
+    headers: lib.z.object({
+        authorization: lib.z.string().min(1),
+    }),
+}, {
+    required_error: `Required settings wasn't provided: {owner: string, repo: string}`,
+});
+//# sourceMappingURL=schema.js.map
+;// CONCATENATED MODULE: ./node_modules/issue-metadata/dist/index.js
+
+
+class MetadataController {
+    constructor(uniqueID, settings) {
+        const verifiedID = idSchema.parse(uniqueID);
+        this.requestDefaults = requestDetailsSchema.parse(settings);
+        this.schema = {
+            id: verifiedID,
+            template: {
+                before: '<!-- ',
+                after: ' -->',
+            },
+        };
+        this.regexp = new RegExp(`^${this.schema.template.before}${verifiedID} = (.*)${this.schema.template.after}$`, 'm');
+    }
+    async getMetadata(issue, key) {
+        const body = (await (0,dist_node.request)('GET /repos/{owner}/{repo}/issues/{issue_number}', Object.assign(Object.assign({}, this.requestDefaults), { issue_number: issue }))).data.body || '';
+        const match = body.match(this.regexp);
+        if (match) {
+            const data = JSON.parse(match[1]);
+            return key ? data && data[key] : data;
+        }
+    }
+    async setMetadata(issue, key, value) {
+        let body = (await (0,dist_node.request)('GET /repos/{owner}/{repo}/issues/{issue_number}', Object.assign(Object.assign({}, this.requestDefaults), { issue_number: issue }))).data.body || '';
+        let data = {};
+        body = body.replace(this.regexp, (_, json) => {
+            data = JSON.parse(json);
+            return '';
+        });
+        if (!data)
+            data = {};
+        if (typeof key === 'object') {
+            Object.assign(data, key);
+        }
+        else {
+            data[key] = value ? value : '';
+        }
+        await (0,dist_node.request)('PATCH /repos/{owner}/{repo}/issues/{issue_number}', Object.assign(Object.assign({}, this.requestDefaults), { issue_number: issue, body: `${body}\n\n${this.schema.template.before}${this.schema.id} = ${JSON.stringify(data)}${this.schema.template.after}` }));
+        return data;
+    }
+}
+//# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ./src/metadata.ts
+
+
+
+
+class Metadata {
+    constructor(issueNumber, controller, metadata) {
+        var _a, _b;
+        this.issueNumber = issueNumber;
+        this.controller = controller;
+        this._tag = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.tag) !== null && _a !== void 0 ? _a : undefined;
+        this._commentID = (_b = metadata === null || metadata === void 0 ? void 0 : metadata.commentID) !== null && _b !== void 0 ? _b : undefined;
+    }
+    get tag() {
+        return this._tag;
+    }
+    set tag(value) {
+        this._tag = value;
+    }
+    get commentID() {
+        return this._commentID;
+    }
+    set commentID(value) {
+        if (this._commentID === undefined) {
+            this._commentID = value;
+        }
+    }
+    async setMetadata() {
+        var _a, _b;
+        if (this.commentID !== undefined) {
+            await this.controller.setMetadata(this.issueNumber, Metadata.metadataCommentID, (_a = this.commentID) !== null && _a !== void 0 ? _a : '');
+        }
+        // TODO: clear tag when un-freezed
+        await this.controller.setMetadata(this.issueNumber, Metadata.metadataFreezingTag, (_b = this.tag) !== null && _b !== void 0 ? _b : '');
+    }
+    static async getMetadata(issueNumber) {
+        const controller = new MetadataController('devel-freezer', Object.assign(Object.assign({}, github.context.repo), { headers: {
+                authorization: `Bearer ${(0,core.getInput)('token', { required: true })}`,
+            } }));
+        const parsedTag = lib.z.string()
+            .safeParse(await controller.getMetadata(issueNumber, Metadata.metadataFreezingTag));
+        const parsedCommentID = lib.z.string()
+            .safeParse(await controller.getMetadata(issueNumber, Metadata.metadataCommentID));
+        return new Metadata(issueNumber, controller, {
+            tag: parsedTag.success ? parsedTag.data : undefined,
+            commentID: parsedCommentID.success ? parsedCommentID.data : undefined,
+        });
+    }
+}
+Metadata.metadataFreezingTag = 'freezing-tag';
+Metadata.metadataCommentID = 'comment-id';
+
+;// CONCATENATED MODULE: ./src/schema/pull-request.ts
+
+const labelDataSchema = lib.z.object({
+    name: lib.z.string(),
+});
+const milestoneDataSchema = lib.z.object({
+    html_url: lib.z.string(),
+    number: lib.z.number(),
+    title: lib.z.string(),
+    description: lib.z.string(),
+    state: lib.z.string(),
+});
+const pullRequestDataSchema = lib.z.object({
+    labels: lib.z.array(labelDataSchema),
+    milestone: milestoneDataSchema.nullable(),
+});
+
+;// CONCATENATED MODULE: ./src/error.ts
+class FreezerError extends Error {
+    constructor(message, code) {
+        super(message);
+        this.code = code;
+    }
+}
+function raise(error, code) {
+    throw new FreezerError(error, code);
+}
+
+;// CONCATENATED MODULE: ./src/milestone.ts
+class Milestone {
+    constructor(data) {
+        this.htmlURL = data.html_url;
+        this.number = data.number;
+        this.title = data.title;
+        this.description = data.description;
+        this.state = data.state;
+        this.regex = new RegExp(`^${this.title}\\S*$`);
+    }
+    isCompliant(tag) {
+        return this.regex.test(tag);
+    }
+}
+
+;// CONCATENATED MODULE: ./src/pull-request.ts
+
+
+
+
+
+
+class PullRequest {
+    constructor(id, octokit) {
+        this.id = id;
+        this.octokit = octokit;
+        this.labels = [];
+        this.milestone = null;
+    }
+    set metadata(metadata) {
+        this._metadata = metadata;
+    }
+    get metadata() {
+        if (!this._metadata) {
+            raise('Metadata is not set.');
+        }
+        return this._metadata;
+    }
+    async initialize() {
+        await this.setPullRequestData();
+        await this.setMetadata();
+    }
+    async setPullRequestData() {
+        const prDataUnsafe = (await this.octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', Object.assign(Object.assign({}, github.context.repo), { pull_number: this.id }))).data;
+        const prData = pullRequestDataSchema.parse(prDataUnsafe);
+        this.labels = prData.labels.map(label => label.name);
+        this.milestone = prData.milestone ? new Milestone(prData.milestone) : null;
+    }
+    async setMetadata() {
+        this.metadata = await Metadata.getMetadata(this.id);
+    }
+    isFreezed() {
+        return !!this.metadata.commentID && !!this.metadata.tag;
+    }
+    isTagPolicyCompliant(tagPolicy, tag) {
+        (0,core.debug)(`Checking tag policy for PR: #${this.id}`);
+        const freezingTag = tag !== null && tag !== void 0 ? tag : this.metadata.tag;
+        if (freezingTag === undefined)
+            false;
+        return tagPolicy.some(regex => new RegExp(regex).test(freezingTag));
+    }
+    async freeze(content, freezingTag) {
+        (0,core.debug)(`Freezing PR: #${this.id}`);
+        const id = await this.publishComment(content);
+        this.metadata.commentID = id === undefined ? id : id.toString();
+        this.metadata.tag = freezingTag;
+        await this.metadata.setMetadata();
+    }
+    async unfreeze(content) {
+        (0,core.debug)(`Unfreezing PR: #${this.id}`);
+        const id = await this.publishComment(content);
+        this.metadata.commentID = id === undefined ? id : id.toString();
+        await this.metadata.setMetadata();
+    }
+    async publishComment(content) {
+        if (this.metadata.commentID) {
+            this.updateComment(content);
+            return;
+        }
+        const commentPayload = await this.createComment(content);
+        if (!commentPayload) {
+            (0,core.warning)(`Failed to create comment.`);
+            return;
+        }
+        return commentPayload.id;
+    }
+    async createComment(body) {
+        if (!body || body === '')
+            return;
+        (0,core.debug)(`Creating comment for PR: #${this.id}`);
+        const { data } = await this.octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', Object.assign(Object.assign({}, github.context.repo), { issue_number: this.id, body }));
+        return data;
+    }
+    async updateComment(body) {
+        if (!this.metadata.commentID)
+            return;
+        (0,core.debug)(`Updating comment with ID: ${this.metadata.commentID}`);
+        const { data } = await this.octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', Object.assign(Object.assign({}, github.context.repo), { comment_id: +this.metadata.commentID, body }));
+        return data;
+    }
+}
+
+
+/***/ }),
+
+/***/ 437:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "W": () => (/* binding */ inputDelaySchema),
+/* harmony export */   "r": () => (/* binding */ inputPrNumberSchema)
+/* harmony export */ });
+/* harmony import */ var zod__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2300);
+
+const inputPrNumberSchema = zod__WEBPACK_IMPORTED_MODULE_0__.z.coerce.number().int().positive();
+const inputDelaySchema = zod__WEBPACK_IMPORTED_MODULE_0__.z.coerce.number().min(0);
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -39806,7 +39828,7 @@ var z = /*#__PURE__*/Object.freeze({
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module used 'module' so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(9496);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(399);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
