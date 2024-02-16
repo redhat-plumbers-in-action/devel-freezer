@@ -30,17 +30,13 @@
 
 Devel Freezer is a GitHub Action that can automatically notify contributors of your open-source project about the state of development. When the project is in development freeze or when the development freeze has ended.
 
-## How does it work
-
-TBA ...
-
 ## Features
 
 * Ability to comment on Pull Requests predefined messages based on the latest tags
 * Ability to find and update comments from Devel Freezer GitHub Action
 * [Policy based](#policy) configuration using YAML syntax
 * Support for regular expressions for freezing tags definitions
-* And more ...
+* Milestones are taken into account when checking for a development freeze. If the set milestone name partially matches the tag name, then they are considered to be connected, and PR is expected to be included in a future release.
 
 ## Usage
 
@@ -228,7 +224,7 @@ policy:
         😎 We are no longer in ...
 
   # Suport for regular expressions
-  - tags: ['^\S*-rc\d$']
+  - tags: ['^(v\d*)-rc\d$']
     feedback:
       frozen-state: |
         We are currently in a development freeze phase.
@@ -241,7 +237,7 @@ policy:
 
 ### `tags` keyword
 
-Array of tag names and/or regular expressions describing freezing tag scheme (e.g. `^\S*-rc\d$` for tags like `v251-rc1`, `v252-rc2`, etc.). Multiple freezing schemes are supported.
+Array of tag names and/or regular expressions describing freezing tag scheme (e.g. `^(v\d*)-rc\d$` for tags like `v251-rc1`, `v252-rc2`, etc.). Multiple freezing schemes are supported.
 
 * requirements: `required`
 

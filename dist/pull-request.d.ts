@@ -1,10 +1,11 @@
 import { Metadata } from './metadata';
 import { CustomOctokit } from './octokit';
+import { Milestone } from './milestone';
 export declare class PullRequest {
     readonly id: number;
     readonly octokit: CustomOctokit;
     labels: string[];
-    milestone: string | null;
+    milestone: Milestone | null;
     private _metadata;
     constructor(id: number, octokit: CustomOctokit);
     set metadata(metadata: Metadata);

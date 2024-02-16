@@ -5,10 +5,11 @@ import { Metadata } from './metadata';
 import { CustomOctokit } from './octokit';
 import { pullRequestDataSchema } from './schema/pull-request';
 import { raise } from './error';
+import { Milestone } from './milestone';
 
 export class PullRequest {
   labels: string[] = [];
-  milestone: string | null = null;
+  milestone: Milestone | null = null;
   private _metadata: Metadata | undefined;
 
   constructor(
@@ -34,7 +35,7 @@ export class PullRequest {
   }
 
   async setPullRequestData() {
-    const prData = pullRequestDataSchema.parse(
+    const prDataUnsafe = (
       await this.octokit.request(
         'GET /repos/{owner}/{repo}/pulls/{pull_number}',
         {
@@ -42,10 +43,12 @@ export class PullRequest {
           pull_number: this.id,
         }
       )
-    );
+    ).data;
+
+    const prData = pullRequestDataSchema.parse(prDataUnsafe);
 
     this.labels = prData.labels.map(label => label.name);
-    this.milestone = prData.milestone ? prData.milestone.title : null;
+    this.milestone = prData.milestone ? new Milestone(prData.milestone) : null;
   }
 
   async setMetadata() {
