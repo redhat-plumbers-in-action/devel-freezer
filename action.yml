@@ -12,10 +12,16 @@ inputs:
     required: true
     default: ${{ github.event.number }}
     description: Pull Request number
+  delay:
+    required: false
+    default: '0'
+    description: Delay in seconds before starting validation of Pull Request
+
   config-path:
     required: true
     default: .github/development-freeze.yml
     description: Path to configuration file
+
   token:
     required: true
     description: GitHub token used to set issue labels
