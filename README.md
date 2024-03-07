@@ -170,6 +170,7 @@ Action currently accepts the following options:
 - uses: redhat-plumbers-in-action/devel-freezer@v1
   with:
     pr-number:    <number>
+    delay:        <seconds>
     config-path:  <path to config file>
     token:        <GitHub token or PAT>
 
@@ -182,6 +183,13 @@ Pull Request number.
 
 * default value: `${{ github.event.number }}`
 * requirements: `required`
+
+### delay
+
+Delay in seconds before the validation of the Pull Request starts. It might be useful to account for the time it takes to set labels and milestones on the Pull Request.
+
+* default value: `0`
+* requirements: `optional`
 
 ### config-path
 

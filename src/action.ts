@@ -4,8 +4,18 @@ import { Config } from './config';
 import { CustomOctokit } from './octokit';
 import { PullRequest } from './pull-request';
 import { Tag } from './tag';
+import { delay } from './delay';
+
+import { inputDelaySchema } from './schema/inputs';
 
 async function action(octokit: CustomOctokit): Promise<void> {
+  const delayParsed = inputDelaySchema.safeParse(getInput('delay'));
+  const delaySeconds = delayParsed.success ? delayParsed.data : 0;
+
+  if (delaySeconds > 0) {
+    await delay(delaySeconds);
+  }
+
   const config = await Config.getConfig(octokit);
 
   const tag = new Tag(await Tag.getLatestTag());

@@ -2,7 +2,14 @@ import { debug, warning, getInput } from '@actions/core';
 import { Config } from './config';
 import { PullRequest } from './pull-request';
 import { Tag } from './tag';
+import { delay } from './delay';
+import { inputDelaySchema } from './schema/inputs';
 async function action(octokit) {
+    const delayParsed = inputDelaySchema.safeParse(getInput('delay'));
+    const delaySeconds = delayParsed.success ? delayParsed.data : 0;
+    if (delaySeconds > 0) {
+        await delay(delaySeconds);
+    }
     const config = await Config.getConfig(octokit);
     const tag = new Tag(await Tag.getLatestTag());
     if (!tag.latest) {
