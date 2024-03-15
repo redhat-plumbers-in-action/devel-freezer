@@ -3,20 +3,53 @@ import { context } from '@actions/github';
 
 import { Metadata } from './metadata';
 import { CustomOctokit } from './octokit';
+import { pullRequestDataSchema } from './schema/pull-request';
+import { raise } from './error';
 
 export class PullRequest {
-  private _metadata: Metadata;
+  labels: string[] = [];
+  milestone: string | null = null;
+  private _metadata: Metadata | undefined;
 
   constructor(
     readonly id: number,
-    readonly octokit: CustomOctokit,
-    metadata: Metadata
-  ) {
+    readonly octokit: CustomOctokit
+  ) {}
+
+  set metadata(metadata: Metadata) {
     this._metadata = metadata;
   }
 
   get metadata() {
+    if (!this._metadata) {
+      raise('Metadata is not set.');
+    }
+
     return this._metadata;
+  }
+
+  async initialize() {
+    await this.setPullRequestData();
+    await this.setMetadata();
+  }
+
+  async setPullRequestData() {
+    const prData = pullRequestDataSchema.parse(
+      await this.octokit.request(
+        'GET /repos/{owner}/{repo}/pulls/{pull_number}',
+        {
+          ...context.repo,
+          pull_number: this.id,
+        }
+      )
+    );
+
+    this.labels = prData.labels.map(label => label.name);
+    this.milestone = prData.milestone ? prData.milestone.title : null;
+  }
+
+  async setMetadata() {
+    this.metadata = await Metadata.getMetadata(this.id);
   }
 
   isFreezed(): boolean {
@@ -98,12 +131,5 @@ export class PullRequest {
     );
 
     return data;
-  }
-
-  static async getPullRequest(
-    id: number,
-    octokit: CustomOctokit
-  ): Promise<PullRequest> {
-    return new PullRequest(id, octokit, await Metadata.getMetadata(id));
   }
 }

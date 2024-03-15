@@ -1,14 +1,35 @@
 import { debug, warning } from '@actions/core';
 import { context } from '@actions/github';
 import { Metadata } from './metadata';
+import { pullRequestDataSchema } from './schema/pull-request';
+import { raise } from './error';
 export class PullRequest {
-    constructor(id, octokit, metadata) {
+    constructor(id, octokit) {
         this.id = id;
         this.octokit = octokit;
+        this.labels = [];
+        this.milestone = null;
+    }
+    set metadata(metadata) {
         this._metadata = metadata;
     }
     get metadata() {
+        if (!this._metadata) {
+            raise('Metadata is not set.');
+        }
         return this._metadata;
+    }
+    async initialize() {
+        await this.setPullRequestData();
+        await this.setMetadata();
+    }
+    async setPullRequestData() {
+        const prData = pullRequestDataSchema.parse(await this.octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', Object.assign(Object.assign({}, context.repo), { pull_number: this.id })));
+        this.labels = prData.labels.map(label => label.name);
+        this.milestone = prData.milestone ? prData.milestone.title : null;
+    }
+    async setMetadata() {
+        this.metadata = await Metadata.getMetadata(this.id);
     }
     isFreezed() {
         return !!this.metadata.commentID && !!this.metadata.tag;
@@ -58,9 +79,6 @@ export class PullRequest {
         debug(`Updating comment with ID: ${this.metadata.commentID}`);
         const { data } = await this.octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', Object.assign(Object.assign({}, context.repo), { comment_id: +this.metadata.commentID, body }));
         return data;
-    }
-    static async getPullRequest(id, octokit) {
-        return new PullRequest(id, octokit, await Metadata.getMetadata(id));
     }
 }
 //# sourceMappingURL=pull-request.js.map

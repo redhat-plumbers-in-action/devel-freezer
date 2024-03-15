@@ -1,10 +1,9 @@
 import { debug, warning, getInput } from '@actions/core';
 import { Config } from './config';
-import { PullRequest } from './pull-request';
 import { Tag } from './tag';
 import { delay } from './delay';
 import { inputDelaySchema } from './schema/inputs';
-async function action(octokit) {
+async function action(pr, octokit) {
     const delayParsed = inputDelaySchema.safeParse(getInput('delay'));
     const delaySeconds = delayParsed.success ? delayParsed.data : 0;
     if (delaySeconds > 0) {
@@ -17,22 +16,25 @@ async function action(octokit) {
         return;
     }
     debug(`Latest tag is: '${tag.latest}'`);
-    const pullRequest = await PullRequest.getPullRequest(+getInput('pr-number'), octokit);
+    // TODO:
+    // * check milestone of the PR
+    // * check if milestone is matching the tag??? or if it has expected format???
+    // * add option to add delay to the freeze/unfreeze action to account for the time to add milestone/labels to the PR
     for (const policyItem of config.policy) {
         if (!tag.isFreezed(policyItem.tags)) {
             continue;
         }
-        await pullRequest.freeze(policyItem.feedback['frozen-state'], tag.latest);
+        await pr.freeze(policyItem.feedback['frozen-state'], tag.latest);
         return;
     }
-    if (!pullRequest.isFreezed()) {
+    if (!pr.isFreezed()) {
         return;
     }
     for (const policyItem of config.policy) {
-        if (!pullRequest.isTagPolicyCompliant(policyItem.tags)) {
+        if (!pr.isTagPolicyCompliant(policyItem.tags)) {
             continue;
         }
-        await pullRequest.unfreeze(policyItem.feedback['unfreeze-state']);
+        await pr.unfreeze(policyItem.feedback['unfreeze-state']);
         return;
     }
     debug(`The latest tag doesn't match the requirements for a development freeze.`);

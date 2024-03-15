@@ -8,7 +8,7 @@ import { delay } from './delay';
 
 import { inputDelaySchema } from './schema/inputs';
 
-async function action(octokit: CustomOctokit): Promise<void> {
+async function action(pr: PullRequest, octokit: CustomOctokit): Promise<void> {
   const delayParsed = inputDelaySchema.safeParse(getInput('delay'));
   const delaySeconds = delayParsed.success ? delayParsed.data : 0;
 
@@ -27,30 +27,25 @@ async function action(octokit: CustomOctokit): Promise<void> {
 
   debug(`Latest tag is: '${tag.latest}'`);
 
-  const pullRequest = await PullRequest.getPullRequest(
-    +getInput('pr-number'),
-    octokit
-  );
-
   for (const policyItem of config.policy) {
     if (!tag.isFreezed(policyItem.tags)) {
       continue;
     }
 
-    await pullRequest.freeze(policyItem.feedback['frozen-state'], tag.latest);
+    await pr.freeze(policyItem.feedback['frozen-state'], tag.latest);
     return;
   }
 
-  if (!pullRequest.isFreezed()) {
+  if (!pr.isFreezed()) {
     return;
   }
 
   for (const policyItem of config.policy) {
-    if (!pullRequest.isTagPolicyCompliant(policyItem.tags)) {
+    if (!pr.isTagPolicyCompliant(policyItem.tags)) {
       continue;
     }
 
-    await pullRequest.unfreeze(policyItem.feedback['unfreeze-state']);
+    await pr.unfreeze(policyItem.feedback['unfreeze-state']);
     return;
   }
 
