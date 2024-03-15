@@ -3,9 +3,15 @@ import { CustomOctokit } from './octokit';
 export declare class PullRequest {
     readonly id: number;
     readonly octokit: CustomOctokit;
+    labels: string[];
+    milestone: string | null;
     private _metadata;
-    constructor(id: number, octokit: CustomOctokit, metadata: Metadata);
+    constructor(id: number, octokit: CustomOctokit);
+    set metadata(metadata: Metadata);
     get metadata(): Metadata;
+    initialize(): Promise<void>;
+    setPullRequestData(): Promise<void>;
+    setMetadata(): Promise<void>;
     isFreezed(): boolean;
     isTagPolicyCompliant(tagPolicy: string[], tag?: string): boolean;
     freeze(content: string, freezingTag: string): Promise<void>;
@@ -108,5 +114,4 @@ export declare class PullRequest {
         } | undefined;
     } | undefined>;
     private updateComment;
-    static getPullRequest(id: number, octokit: CustomOctokit): Promise<PullRequest>;
 }

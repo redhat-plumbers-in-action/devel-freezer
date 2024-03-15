@@ -1,3 +1,4 @@
 import { CustomOctokit } from './octokit';
-declare function action(octokit: CustomOctokit): Promise<void>;
+import { PullRequest } from './pull-request';
+declare function action(pr: PullRequest, octokit: CustomOctokit): Promise<void>;
 export default action;
