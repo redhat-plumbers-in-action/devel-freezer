@@ -41,6 +41,15 @@ async function action(pr: PullRequest, octokit: CustomOctokit): Promise<void> {
       continue;
     }
 
+    // check if PR labels include allow label from the policy
+    if (
+      policyItem.labels &&
+      policyItem.labels.allow.some(label => pr.labels.includes(label))
+    ) {
+      info(`PR labels include allow label from the policy.`);
+      continue;
+    }
+
     // Mark PR as frozen when all conditions are met
     await pr.freeze(policyItem.feedback['frozen-state'], tag.latest);
     return;
