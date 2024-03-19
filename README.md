@@ -142,7 +142,9 @@ policy:
         😎 We are no longer in ...
 
   # Suport for regular expressions
-  - tags: ['^\S*-rc\d$']
+  - tags: ['^(v\d*)-rc\d$']
+    labels:
+      allow: ['regression ⚠️']
     feedback:
       frozen-state: |
         We are currently in a development freeze phase.
@@ -225,6 +227,8 @@ policy:
 
   # Suport for regular expressions
   - tags: ['^(v\d*)-rc\d$']
+    labels:
+      allow: ['regression ⚠️']
     feedback:
       frozen-state: |
         We are currently in a development freeze phase.
@@ -240,6 +244,10 @@ policy:
 Array of tag names and/or regular expressions describing freezing tag scheme (e.g. `^(v\d*)-rc\d$` for tags like `v251-rc1`, `v252-rc2`, etc.). Multiple freezing schemes are supported.
 
 * requirements: `required`
+
+### `labels.allow` keyword
+
+Array of labels that marks Pull Request as allowed to be merged during development freeze. If the label is not present, the Pull Request will be marked with freezing message when other conditions are met.
 
 ### `feedback.frozen-state` keyword
 

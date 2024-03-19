@@ -30467,6 +30467,10 @@ var lib = __nccwpck_require__(2300);
 
 const policySchema = lib.z.object({
     tags: lib.z.array(lib.z.string().min(1)),
+    labels: lib.z.object({
+        allow: lib.z.array(lib.z.string().min(1)),
+    })
+        .optional(),
     feedback: lib.z.object({
         'frozen-state': lib.z.string().min(1),
         'unfreeze-state': lib.z.string().min(1),
@@ -30574,6 +30578,12 @@ async function action(pr, octokit) {
         // check if milestone is set and matches the pre-release tag ~ PR is planned to get merged before the next release
         if (pr.milestone !== null && pr.milestone.isCompliant(tag.latest)) {
             (0,core.info)(`PR is marked with a milestone that matches the latest pre-release tag.`);
+            continue;
+        }
+        // check if PR labels include allow label from the policy
+        if (policyItem.labels &&
+            policyItem.labels.allow.some(label => pr.labels.includes(label))) {
+            (0,core.info)(`PR labels include allow label from the policy.`);
             continue;
         }
         // Mark PR as frozen when all conditions are met
