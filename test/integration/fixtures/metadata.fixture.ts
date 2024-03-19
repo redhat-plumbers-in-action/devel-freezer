@@ -18,8 +18,8 @@ export interface IMetadataTestContext {
 
 export const metadataContextFixture: IMetadataTestContext = {
   payloads: [
-    payloadPullRequestOpened as PullRequestOpenedEvent,
-    payloadPullRequestReopened as PullRequestReopenedEvent,
-    payloadPullRequestSynchronize as PullRequestSynchronizeEvent,
+    payloadPullRequestOpened as unknown as PullRequestOpenedEvent,
+    payloadPullRequestReopened as unknown as PullRequestReopenedEvent,
+    payloadPullRequestSynchronize as unknown as PullRequestSynchronizeEvent,
   ],
 };
