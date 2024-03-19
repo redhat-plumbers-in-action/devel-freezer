@@ -27,7 +27,7 @@ jobs:
           echo ${{ github.event.number }} > ./${{ env.PULL_REQUEST_METADATA_DIR }}/${{ env.PULL_REQUEST_METADATA_FILE }}
 
       - name: Upload Pull Request Metadata artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PULL_REQUEST_METADATA_FILE }}
           path: ${{ env.PULL_REQUEST_METADATA_DIR }}
