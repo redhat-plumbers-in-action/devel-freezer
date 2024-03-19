@@ -85,7 +85,7 @@ describe('Config Object', () => {
     await expect(
       Config.getConfig(octokit(noConfigObject))
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      "\"Missing configuration. Please setup 'devel-freezer' Action using '.github/development-freeze.yml' file.\""
+      `[Error: Missing configuration. Please setup 'devel-freezer' Action using '.github/development-freeze.yml' file.]`
     );
   });
 
