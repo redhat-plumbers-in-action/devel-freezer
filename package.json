@@ -7,11 +7,10 @@
     "build": "tsc",
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
-    "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "vitest run --coverage",
     "update-snapshots": "vitest run --update",
-    "all": "yarn run build && yarn run format && yarn run lint && yarn run package && yarn test"
+    "all": "yarn run build && yarn run format && yarn run package && yarn test"
   },
   "repository": {
     "type": "git",
@@ -41,12 +40,8 @@
     "@octokit/webhooks-types": "^7.3.1",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/node": "^20.9.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
     "@vercel/ncc": "^0.38.1",
     "@vitest/coverage-v8": "^1.0.0",
-    "eslint": "^8.53.0",
-    "eslint-plugin-prettier": "^5.0.1",
     "js-yaml": "^4.1.0",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
