@@ -516,13 +516,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/openapi-webhooks-types@npm:8.2.1":
-  version: 8.2.1
-  resolution: "@octokit/openapi-webhooks-types@npm:8.2.1"
-  checksum: 10c0/9efd4eb29dc02ce0184cc8de3746ab4f1b260cfc37e714273ad16553ef69701cb71b43e6993bef1f648e5f7e343e13641bdb823ccfdd7ab9b89ff612cd04f954
-  languageName: node
-  linkType: hard
-
 "@octokit/plugin-paginate-rest@npm:11.3.1":
   version: 11.3.1
   resolution: "@octokit/plugin-paginate-rest@npm:11.3.1"
@@ -683,32 +676,6 @@ __metadata:
   dependencies:
     "@octokit/openapi-types": "npm:^22.2.0"
   checksum: 10c0/355ebc6776ce23feace1b1be0927cdda758790fda83068109c4f27b354dcd43d0447d4dc24e5eafdb596465469ea1baed23f3fd63adfec508cc375ccd1dcb0a3
-  languageName: node
-  linkType: hard
-
-"@octokit/webhooks-methods@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@octokit/webhooks-methods@npm:5.0.0"
-  checksum: 10c0/6193e2bcf66319962ef2c8212a3e672176274619f6874701aa4a1d15d9886e139bd604700b9c976e38c95ae7b1f308bc8aca6e30c54c93e6dc963c8a28e48ff3
-  languageName: node
-  linkType: hard
-
-"@octokit/webhooks-types@npm:7.5.1":
-  version: 7.5.1
-  resolution: "@octokit/webhooks-types@npm:7.5.1"
-  checksum: 10c0/42744c0df0890b2189678c11c52890bcf9f2feb91fb0084d710efddc78fe7c1962b7dcb9d3a102e27134ca11c64429e0f7efef9dc5aba1ba7ba9ebc326dbd81f
-  languageName: node
-  linkType: hard
-
-"@octokit/webhooks@npm:13.2.7":
-  version: 13.2.7
-  resolution: "@octokit/webhooks@npm:13.2.7"
-  dependencies:
-    "@octokit/openapi-webhooks-types": "npm:8.2.1"
-    "@octokit/request-error": "npm:^6.0.1"
-    "@octokit/webhooks-methods": "npm:^5.0.0"
-    aggregate-error: "npm:^5.0.0"
-  checksum: 10c0/1abda61da4567732104478269cd67c787604a806e0dcaf4f2b259dee83f49c1edb7550bd09d4c4371f332a1fe3f0a30ed3a5818721292157da895da634386a71
   languageName: node
   linkType: hard
 
@@ -1039,16 +1006,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aggregate-error@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "aggregate-error@npm:5.0.0"
-  dependencies:
-    clean-stack: "npm:^5.2.0"
-    indent-string: "npm:^5.0.0"
-  checksum: 10c0/a5de7138571f514bad76290736f49a0db8809247082f2519037e0c37d03fc8d91d733e079d6b1674feda28a757b1932421ad205b8c0f8794a0c0e5bf1be2315e
-  languageName: node
-  linkType: hard
-
 "ansi-regex@npm:^5.0.1":
   version: 5.0.1
   resolution: "ansi-regex@npm:5.0.1"
@@ -1212,15 +1169,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clean-stack@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "clean-stack@npm:5.2.0"
-  dependencies:
-    escape-string-regexp: "npm:5.0.0"
-  checksum: 10c0/0de47a4152e49dcdeede5f47d7bb9a39a3ea748acb1cd2f0160dbee972d920be81390cb4c5566e6b795791b9efb12359e89fdd7c2e63b36025d59529558570f1
-  languageName: node
-  linkType: hard
-
 "color-convert@npm:^2.0.1":
   version: 2.0.1
   resolution: "color-convert@npm:2.0.1"
@@ -1298,15 +1246,12 @@ __metadata:
     "@actions/github": "npm:6.0.0"
     "@octokit/core": "npm:6.1.2"
     "@octokit/rest": "npm:20.1.1"
-    "@octokit/webhooks": "npm:13.2.7"
-    "@octokit/webhooks-types": "npm:7.5.1"
     "@probot/octokit-plugin-config": "npm:3.0.2"
     "@total-typescript/ts-reset": "npm:0.5.1"
     "@types/node": "npm:20.12.8"
     "@vercel/ncc": "npm:0.38.1"
     "@vitest/coverage-v8": "npm:1.6.0"
     issue-metadata: "npm:0.1.10"
-    js-yaml: "npm:4.1.0"
     prettier: "npm:3.2.5"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.4.5"
@@ -1450,13 +1395,6 @@ __metadata:
   bin:
     esbuild: bin/esbuild
   checksum: 10c0/66398f9fb2c65e456a3e649747b39af8a001e47963b25e86d9c09d2a48d61aa641b27da0ce5cad63df95ad246105e1d83e7fee0e1e22a0663def73b1c5101112
-  languageName: node
-  linkType: hard
-
-"escape-string-regexp@npm:5.0.0":
-  version: 5.0.0
-  resolution: "escape-string-regexp@npm:5.0.0"
-  checksum: 10c0/6366f474c6f37a802800a435232395e04e9885919873e382b157ab7e8f0feb8fed71497f84a6f6a81a49aab41815522f5839112bd38026d203aea0c91622df95
   languageName: node
   linkType: hard
 
@@ -1668,13 +1606,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"indent-string@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "indent-string@npm:5.0.0"
-  checksum: 10c0/8ee77b57d92e71745e133f6f444d6fa3ed503ad0e1bcd7e80c8da08b42375c07117128d670589725ed07b1978065803fa86318c309ba45415b7fe13e7f170220
-  languageName: node
-  linkType: hard
-
 "inflight@npm:^1.0.4":
   version: 1.0.6
   resolution: "inflight@npm:1.0.6"
@@ -1810,7 +1741,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
+"js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
