@@ -522,6 +522,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/plugin-throttling@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "@octokit/plugin-throttling@npm:9.3.0"
+  dependencies:
+    "@octokit/types": "npm:^13.0.0"
+    bottleneck: "npm:^2.15.3"
+  peerDependencies:
+    "@octokit/core": ^6.0.0
+  checksum: 10c0/402368a422e6ed4092acf2aa21117ef92e1c4da22aab0fcfa32a1e57c7a021844605551af6c24e5b866cc4c4d601227bba88cea25c40712fc2d79b36ece5bf9d
+  languageName: node
+  linkType: hard
+
 "@octokit/request-error@npm:^5.1.0":
   version: 5.1.0
   resolution: "@octokit/request-error@npm:5.1.0"
@@ -993,6 +1005,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bottleneck@npm:^2.15.3":
+  version: 2.19.5
+  resolution: "bottleneck@npm:2.19.5"
+  checksum: 10c0/b0f72e45b2e0f56a21ba720183f16bef8e693452fb0495d997fa354e42904353a94bd8fd429868e6751bc85e54b6755190519eed5a0ae0a94a5185209ae7c6d0
+  languageName: node
+  linkType: hard
+
 "brace-expansion@npm:^1.1.7":
   version: 1.1.11
   resolution: "brace-expansion@npm:1.1.11"
@@ -1160,6 +1179,7 @@ __metadata:
     "@actions/core": "npm:1.10.1"
     "@actions/github": "npm:6.0.0"
     "@octokit/core": "npm:6.1.2"
+    "@octokit/plugin-throttling": "npm:^9.3.0"
     "@octokit/rest": "npm:20.1.1"
     "@probot/octokit-plugin-config": "npm:3.0.2"
     "@total-typescript/ts-reset": "npm:0.5.1"
