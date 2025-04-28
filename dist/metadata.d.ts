@@ -9,9 +9,9 @@ export declare class Metadata {
     private _tag;
     private _commentID;
     constructor(issueNumber: number, controller: MetadataController, metadata: MetadataObject);
-    get tag(): MetadataObject['tag'];
+    get tag(): MetadataObject["tag"];
     set tag(value: MetadataObject['tag']);
-    get commentID(): MetadataObject['commentID'];
+    get commentID(): MetadataObject["commentID"];
     set commentID(value: MetadataObject['commentID']);
     static readonly metadataFreezingTag = "freezing-tag";
     static readonly metadataCommentID = "comment-id";
