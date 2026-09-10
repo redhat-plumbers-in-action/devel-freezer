@@ -458,6 +458,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/endpoint@npm:^11.0.5":
+  version: 11.0.5
+  resolution: "@octokit/endpoint@npm:11.0.5"
+  dependencies:
+    "@octokit/types": "npm:^18.0.0"
+    universal-user-agent: "npm:^7.0.2"
+  checksum: 10c0/f74fb1ecffbc544c6164ce0fdcdc9e2d85d504b515a556cc5eb7f046a8e99cb1f70c89cd9107cb81dac2110da07a72de30388af91472e2e43f84a4e79ab6e70e
+  languageName: node
+  linkType: hard
+
 "@octokit/endpoint@npm:^9.0.6":
   version: 9.0.6
   resolution: "@octokit/endpoint@npm:9.0.6"
@@ -508,6 +518,13 @@ __metadata:
   version: 25.0.0
   resolution: "@octokit/openapi-types@npm:25.0.0"
   checksum: 10c0/59c9e5998e08cecec155b776c93d8f6f88ab1a812add61cc65f3de8f3744201565545eac308083d18c9fa330a4381a27bcd771a311ac0348d3590a00f333f233
+  languageName: node
+  linkType: hard
+
+"@octokit/openapi-types@npm:^29.0.1":
+  version: 29.0.1
+  resolution: "@octokit/openapi-types@npm:29.0.1"
+  checksum: 10c0/1f1550a7877bb23584396a976d3f3b71c8496a86c135072050ff7ddfc0cd816804373ccc233bafab3a31a0178114e2599846cf54416f32f310712fc05699c5f7
   languageName: node
   linkType: hard
 
@@ -596,6 +613,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/request-error@npm:^7.1.2":
+  version: 7.1.2
+  resolution: "@octokit/request-error@npm:7.1.2"
+  dependencies:
+    "@octokit/types": "npm:^18.0.0"
+  checksum: 10c0/89bb7005ee1cc7b52d1e4546ae9636d9af1dfcf1bee716d06106a4a58ac605845427b4552de816dee15c82a7bcafc1e36e683186789dfa05485eeb13cb4cc176
+  languageName: node
+  linkType: hard
+
+"@octokit/request@npm:^10.0.10":
+  version: 10.0.16
+  resolution: "@octokit/request@npm:10.0.16"
+  dependencies:
+    "@octokit/endpoint": "npm:^11.0.5"
+    "@octokit/request-error": "npm:^7.1.2"
+    "@octokit/types": "npm:^18.0.0"
+    content-type: "npm:^3.0.0"
+    json-with-bigint: "npm:^3.5.12"
+    universal-user-agent: "npm:^7.0.2"
+  checksum: 10c0/db3f1d1ab32f2238889c07ac2d0e4d9ec39afa7614a6c19e15136bad12118c4b538ccfb6a013c89ba8d1074da13efe8bb489d0557bce6cc7d5894587a7beded6
+  languageName: node
+  linkType: hard
+
 "@octokit/request@npm:^8.4.1":
   version: 8.4.1
   resolution: "@octokit/request@npm:8.4.1"
@@ -608,7 +648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/request@npm:^9.2.2, @octokit/request@npm:^9.2.3":
+"@octokit/request@npm:^9.2.3":
   version: 9.2.3
   resolution: "@octokit/request@npm:9.2.3"
   dependencies:
@@ -657,6 +697,15 @@ __metadata:
   dependencies:
     "@octokit/openapi-types": "npm:^25.0.0"
   checksum: 10c0/c82da635fe99f265dbef7bf954d45a23ca7ce9c6fc9a8478c247b5435799e5d0eab3ff42f085785ee0882b2de293cab0ab831b379c66f41d00b78412df850ba4
+  languageName: node
+  linkType: hard
+
+"@octokit/types@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@octokit/types@npm:18.0.0"
+  dependencies:
+    "@octokit/openapi-types": "npm:^29.0.1"
+  checksum: 10c0/d7336d2a4176684820388a6c6cf5bc8249672fad1f81f641c6ac30d2da123c0475fb752d3b16edf7cd3715e8fb01d3765c0e2f7ed724a6fbf7f84a1becd04bb5
   languageName: node
   linkType: hard
 
@@ -1177,6 +1226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"content-type@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "content-type@npm:3.1.0"
+  checksum: 10c0/b64a6da38541cdbd177ebc4d6f4dcbebdb28a3d0b14466dd451b6f7cf50bf7c6d93b04abd41c11e7f30dd436b4bed2b23c24a4eef4c52383f73c978ba975b83f
+  languageName: node
+  linkType: hard
+
 "create-require@npm:^1.1.0":
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
@@ -1235,7 +1291,7 @@ __metadata:
     "@types/node": "npm:22.18.8"
     "@vercel/ncc": "npm:0.38.4"
     "@vitest/coverage-v8": "npm:2.1.9"
-    issue-metadata: "npm:0.2.4"
+    issue-metadata: "npm:0.3.1"
     prettier: "npm:3.6.2"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.9.3"
@@ -1573,13 +1629,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"issue-metadata@npm:0.2.4":
-  version: 0.2.4
-  resolution: "issue-metadata@npm:0.2.4"
+"issue-metadata@npm:0.3.1":
+  version: 0.3.1
+  resolution: "issue-metadata@npm:0.3.1"
   dependencies:
-    "@octokit/request": "npm:^9.2.2"
-    zod: "npm:^3.24.2"
-  checksum: 10c0/d360babfa2288c3dfe9acc47109cd05d2c9805d44460b0dcb5b6d0ef910ab0c01ec182af6dd9f6f12d11068d0e192fe592f645d5bbf1d39b1cd9606c170be471
+    "@octokit/request": "npm:^10.0.10"
+    zod: "npm:^4.4.3"
+  checksum: 10c0/0050bf11f197f7cf4250f921fe4c9b4c3249fa8f21749706782af54439cbeecbc9c2994cc6190eb177111fa3f61cceb405de6042147426cfa10f6a891fcd361a
   languageName: node
   linkType: hard
 
@@ -1650,6 +1706,13 @@ __metadata:
   version: 1.1.0
   resolution: "jsbn@npm:1.1.0"
   checksum: 10c0/4f907fb78d7b712e11dea8c165fe0921f81a657d3443dde75359ed52eb2b5d33ce6773d97985a089f09a65edd80b11cb75c767b57ba47391fee4c969f7215c96
+  languageName: node
+  linkType: hard
+
+"json-with-bigint@npm:^3.5.12":
+  version: 3.5.12
+  resolution: "json-with-bigint@npm:3.5.12"
+  checksum: 10c0/3c205a445ee946bbe2409fb3e1840617eb0bac9086934ed55fefbd584c8d5bfd288bdc9a44acc8e5ca4d1ccf83b5c2ebd63add5ef4b5ca656ef4f968bf832e79
   languageName: node
   linkType: hard
 
@@ -2606,9 +2669,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.24.2":
-  version: 3.24.3
-  resolution: "zod@npm:3.24.3"
-  checksum: 10c0/ab0369810968d0329a1a141e9418e01e5c9c2a4905cbb7cb7f5a131d6e9487596e1400e21eeff24c4a8ee28dacfa5bd6103893765c055b7a98c2006a5a4fc68d
+"zod@npm:^4.4.3":
+  version: 4.6.2
+  resolution: "zod@npm:4.6.2"
+  checksum: 10c0/0d0dc2dc37c62e8777bb2d691e7fb8a0c80cc57e343df69fa62a57f26e0ac20107b14afda34f3bed98b27e5378eee2bbc7c5d23c203c3602690148a014dec7cd
   languageName: node
   linkType: hard
